@@ -53,7 +53,6 @@ class GraphiteController(
     return tagSearchHandler.getTags(
       tagsAutoCompleteRequest.tagPrefix,
       tagsAutoCompleteRequest.expr,
-      tagsAutoCompleteRequest.tag,
       tagsAutoCompleteRequest.from * 1_000,
       tagsAutoCompleteRequest.until * 1_000
     )
@@ -68,8 +67,7 @@ class GraphiteController(
       tagsAutoCompleteRequest.expr,
       tagsAutoCompleteRequest.tag,
       tagsAutoCompleteRequest.from * 1_000,
-      tagsAutoCompleteRequest.until * 1_000,
-      tagsAutoCompleteRequest.limit
+      tagsAutoCompleteRequest.until * 1_000
     )
   }
 

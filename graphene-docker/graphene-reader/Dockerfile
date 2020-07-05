@@ -4,8 +4,8 @@ FROM gradle:5.5.1-jdk8
 #         Program version       #
 #################################
 ENV GRAPHENE_TYPE=graphene-reader
-ENV GRAPHENE_BRANCH=1.9.0
-ENV GRAPHENE_VERSION=1.9.0
+ENV GRAPHENE_BRANCH=1.9.1
+ENV GRAPHENE_VERSION=1.9.1
 ENV CONFD_VERSION=0.16.0
 
 #################################

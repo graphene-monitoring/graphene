@@ -19,6 +19,7 @@ class SimpleKeySearchHandlerProperty : IndexProperty {
   var scroll: Int = 0
   var timeout: Int = 0
   var maxPaths: Int = 0
+  var maxTagResults: Int = 0
 
   override fun keySelectorProperty(): KeySelectorProperty = keySelectorProperty
 
@@ -45,6 +46,8 @@ class SimpleKeySearchHandlerProperty : IndexProperty {
   override fun timeout(): Int = timeout
 
   override fun maxPaths(): Int = maxPaths
+
+  override fun maxTagResults(): Int = maxTagResults
 
   override fun toString(): String {
     return "SimpleKeySearchHandler{" +

@@ -52,13 +52,16 @@ class TagBasedKeyStoreHandler(
       source.field(tag.key, tag.value)
     }
 
-    source.field("@name", grapheneMetric.metricKey())
+    source.field(TAGS_FIELD, grapheneMetric.tags.keys)
+    source.field(NAME_FIELD, grapheneMetric.metricKey())
 
     return source.endObject()
   }
 
   companion object {
     const val TEMPLATE_NAME = "tag-based-key-path-template"
+    const val TAGS_FIELD = "@tags"
+    const val NAME_FIELD = "@name"
     const val SOURCE = """
       {
         "settings": {

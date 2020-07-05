@@ -25,7 +25,7 @@ sourceSets {
 }
 
 group = 'com.graphene.reader'
-version = '1.9.0'
+version = '1.9.1'
 description = 'graphene-reader'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'

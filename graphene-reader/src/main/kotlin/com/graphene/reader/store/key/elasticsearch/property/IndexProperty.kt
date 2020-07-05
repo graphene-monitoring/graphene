@@ -22,4 +22,5 @@ interface IndexProperty {
   fun scroll(): Int
   fun timeout(): Int
   fun maxPaths(): Int
+  fun maxTagResults(): Int
 }

@@ -31,24 +31,27 @@ class ElasticsearchClient(
   private val client: RestHighLevelClient,
   private val indexProperty: IndexProperty
 ) {
-
   val keySelector: KeySelector = RollingKeySelector(indexProperty.keySelectorProperty())
+  val maxTagResults: Int = indexProperty.maxTagResults()
 
-  fun query(query: QueryBuilder, from: Long, to: Long, specifiedField: String = "", limit: Int = 100): Response {
+  fun query(query: QueryBuilder, from: Long, to: Long, tagAggregationField: String = ""): Response {
     val searchSourceBuilder = SearchSourceBuilder()
-    if (StringUtils.isNotBlank(specifiedField)) {
-      searchSourceBuilder.fetchSource(arrayOf(specifiedField), null)
-      searchSourceBuilder.aggregation(AggregationBuilders.terms(AGGREGATION_KEY).field(specifiedField).size(limit))
-    }
-    searchSourceBuilder.query(query)
-    searchSourceBuilder.size(indexProperty.scroll())
-
     val selectedIndex = keySelector.select(indexProperty.index()!!, indexProperty.tenant(), from, to)
     val searchRequest = SearchRequest(*selectedIndex.toTypedArray())
-    searchRequest.source(searchSourceBuilder)
-    searchRequest.scroll(TimeValue(indexProperty.timeout().toLong()))
-    searchRequest.indicesOptions(IndicesOptions.fromOptions(true, true, true, false))
 
+    searchRequest.indicesOptions(IndicesOptions.fromOptions(true, true, true, false))
+    searchSourceBuilder.query(query)
+
+    if (StringUtils.isNotBlank(tagAggregationField)) {
+      searchSourceBuilder.fetchSource(arrayOf(tagAggregationField), null)
+      searchSourceBuilder.aggregation(AggregationBuilders.terms(AGGREGATION_KEY).field(tagAggregationField).size(maxTagResults))
+      searchSourceBuilder.size(AGGREGATION_RESULT_SIZE)
+    } else {
+      searchRequest.scroll(TimeValue(indexProperty.timeout().toLong()))
+      searchSourceBuilder.size(indexProperty.scroll())
+    }
+
+    searchRequest.source(searchSourceBuilder)
     val searchResponse = client.search(searchRequest, RequestOptions.DEFAULT)
 
     return Response.of(searchResponse)
@@ -121,30 +124,32 @@ class ElasticsearchClient(
     val scrollId: String,
     val hits: SearchHits,
     val size: Int,
-    val tagValues: Set<String>
+    val tagSearchResults: Set<String>
   ) {
     companion object {
       fun of(response: SearchResponse): Response {
-        val tagValues = mutableSetOf<String>()
+        val tagSearchResults = mutableSetOf<String>()
         if (Objects.nonNull(response.aggregations) &&
           Objects.nonNull(response.aggregations.asMap[AGGREGATION_KEY]) &&
           ! (response.aggregations.asMap[AGGREGATION_KEY] as ParsedStringTerms).buckets.isNullOrEmpty()) {
           for (bucket in (response.aggregations.asMap[AGGREGATION_KEY] as ParsedStringTerms).buckets) {
-            tagValues.add(bucket.keyAsString)
+            tagSearchResults.add(bucket.keyAsString)
           }
         }
         return Response(
-          response.scrollId,
+          response.scrollId ?: EMPTY_SCROLL_ID,
           response.hits,
           response.hits.hits.size,
-          tagValues
+          tagSearchResults
         )
       }
     }
   }
 
   companion object {
+    internal const val EMPTY_SCROLL_ID = ""
     internal const val AGGREGATION_KEY = "AGGREGATION"
+    internal const val AGGREGATION_RESULT_SIZE = 0
     internal val logger = LoggerFactory.getLogger(ElasticsearchClient::class.java)
   }
 }

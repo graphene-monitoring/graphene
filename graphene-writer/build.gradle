@@ -37,6 +37,6 @@ sourceSets {
 }
 
 group = 'com.graphene.writer'
-version = '1.9.0'
+version = '1.9.1'
 description = 'graphene-writer'
 sourceCompatibility = '1.8'

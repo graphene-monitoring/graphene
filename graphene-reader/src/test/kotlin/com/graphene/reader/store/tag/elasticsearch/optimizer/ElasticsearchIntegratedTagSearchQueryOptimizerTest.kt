@@ -25,9 +25,11 @@ internal class ElasticsearchIntegratedTagSearchQueryOptimizerTest {
             }
           },
           {
-            "prefix" : {
+            "regexp" : {
               "server" : {
-                "value" : "a",
+                "value" : ".*a.*",
+                "flags_value" : 65535,
+                "max_determinized_states" : 10000,
                 "boost" : 1.0
               }
             }

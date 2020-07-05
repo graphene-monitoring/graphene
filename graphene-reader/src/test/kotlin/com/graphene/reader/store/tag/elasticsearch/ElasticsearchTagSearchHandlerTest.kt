@@ -19,7 +19,7 @@ internal class ElasticsearchTagSearchHandlerTest {
     // given
     val response = ElasticsearchClient.Response("", SearchHits.empty(), 0, mutableSetOf("a"))
 
-    every { elasticsearchClient.query(any(), any(), any(), any(), any()) } answers { response }
+    every { elasticsearchClient.query(any(), any(), any(), any()) } answers { response }
     every { elasticsearchClient.searchScroll(any()) } answers { ElasticsearchTestUtils.emptyResponse() }
     every { elasticsearchClient.clearScroll(any()) } answers { Unit }
 
@@ -27,7 +27,7 @@ internal class ElasticsearchTagSearchHandlerTest {
 
     val result = elasticsearchTagSearchHandler
       .getTagValues(
-        "", mutableListOf(), "a", 0, 10, 10
+        "", mutableListOf(), "a", 0, 10
       )
 
     // then
@@ -40,7 +40,7 @@ internal class ElasticsearchTagSearchHandlerTest {
     // given
     val response = ElasticsearchClient.Response("", SearchHits.empty(), 0, mutableSetOf())
 
-    every { elasticsearchClient.query(any(), any(), any(), any(), any()) } answers { response }
+    every { elasticsearchClient.query(any(), any(), any(), any()) } answers { response }
     every { elasticsearchClient.searchScroll(any()) } answers { ElasticsearchTestUtils.emptyResponse() }
     every { elasticsearchClient.clearScroll(any()) } answers { Unit }
 
@@ -48,7 +48,7 @@ internal class ElasticsearchTagSearchHandlerTest {
 
     val result = elasticsearchTagSearchHandler
       .getTagValues(
-        "", mutableListOf(), "a", 0, 10, 10
+        "", mutableListOf(), "a", 0, 10
       )
 
     // then
