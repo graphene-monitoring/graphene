@@ -33,14 +33,15 @@ internal class SimpleDataStoreHandlerTest {
       property = CassandraDataHandlerProperty()
     )
 
-    val query = """
+    val query =
+      """
           UPDATE metric.metric
           USING TTL ?
           SET data = ?
           WHERE tenant = ?
                 AND path = ?
                 AND time = ?;
-    """.trimIndent()
+      """.trimIndent()
 
     every { cassandraFactory.createCluster(any()) } answers { cluster }
     every { cluster.connect() } answers { session }

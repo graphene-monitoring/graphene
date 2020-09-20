@@ -26,11 +26,14 @@ internal class SimpleKeySearchHandlerTest {
   internal fun `should return deduplicated hierarchy metric path`() {
     // given
     val response = ElasticsearchClient.Response.of(
-      ElasticsearchTestUtils.searchResponse(arrayOf(
-        arrayOf(Pair("@tenant", "NONE"), Pair("depth", 4), Pair("leaf", true), Pair("path", "hosts.i-a.cpu.usage")),
-        arrayOf(Pair("@tenant", "NONE"), Pair("depth", 4), Pair("leaf", true), Pair("path", "hosts.i-b.cpu.usage")),
-        arrayOf(Pair("@tenant", "NONE"), Pair("depth", 4), Pair("leaf", true), Pair("path", "hosts.i-c.cpu.usage"))
-      )))
+      ElasticsearchTestUtils.searchResponse(
+        arrayOf(
+          arrayOf(Pair("@tenant", "NONE"), Pair("depth", 4), Pair("leaf", true), Pair("path", "hosts.i-a.cpu.usage")),
+          arrayOf(Pair("@tenant", "NONE"), Pair("depth", 4), Pair("leaf", true), Pair("path", "hosts.i-b.cpu.usage")),
+          arrayOf(Pair("@tenant", "NONE"), Pair("depth", 4), Pair("leaf", true), Pair("path", "hosts.i-c.cpu.usage"))
+        )
+      )
+    )
 
     every { elasticsearchClient.query(any(), any(), any()) } answers { response }
     every { elasticsearchClient.searchScroll(any()) } answers { ElasticsearchTestUtils.emptyResponse() }
@@ -52,9 +55,12 @@ internal class SimpleKeySearchHandlerTest {
   internal fun `should return a plain path if without complex query path`() {
     // given
     val response = ElasticsearchClient.Response.of(
-      ElasticsearchTestUtils.searchResponse(arrayOf(
-        arrayOf(Pair("@tenant", "NONE"), Pair("depth", 4), Pair("leaf", true), Pair("path", "servers.server1.cpu.usage"))
-      )))
+      ElasticsearchTestUtils.searchResponse(
+        arrayOf(
+          arrayOf(Pair("@tenant", "NONE"), Pair("depth", 4), Pair("leaf", true), Pair("path", "servers.server1.cpu.usage"))
+        )
+      )
+    )
 
     every { elasticsearchClient.query(any(), any(), any()) } answers { response }
     every { elasticsearchClient.searchScroll(any()) } answers { ElasticsearchTestUtils.emptyResponse() }
@@ -78,9 +84,12 @@ internal class SimpleKeySearchHandlerTest {
   internal fun `should return result about query if with complex query path`() {
     // given
     val response = ElasticsearchClient.Response.of(
-      ElasticsearchTestUtils.searchResponse(arrayOf(
-        arrayOf(Pair("@tenant", "NONE"), Pair("depth", 4), Pair("leaf", true), Pair("path", "servers.server1.cpu.usage"))
-      )))
+      ElasticsearchTestUtils.searchResponse(
+        arrayOf(
+          arrayOf(Pair("@tenant", "NONE"), Pair("depth", 4), Pair("leaf", true), Pair("path", "servers.server1.cpu.usage"))
+        )
+      )
+    )
 
     every { elasticsearchClient.query(any(), any(), any()) } answers { response }
     every { elasticsearchClient.searchScroll(any()) } answers { ElasticsearchTestUtils.emptyResponse() }

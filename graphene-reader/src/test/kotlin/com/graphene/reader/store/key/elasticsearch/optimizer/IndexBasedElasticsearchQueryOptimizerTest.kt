@@ -14,7 +14,8 @@ internal class IndexBasedElasticsearchQueryOptimizerTest {
     val query = optimizer.optimizeLeafQuery("servers.server1.cpu.usage")
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [
@@ -72,7 +73,8 @@ internal class IndexBasedElasticsearchQueryOptimizerTest {
     val query = optimizer.optimizeBranchQuery("servers.server1.cpu.usage")
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [
@@ -122,7 +124,8 @@ internal class IndexBasedElasticsearchQueryOptimizerTest {
     val query = optimizer.optimizeBranchQuery("servers.*")
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [
@@ -148,7 +151,8 @@ internal class IndexBasedElasticsearchQueryOptimizerTest {
     val query = optimizer.optimizeBranchQuery("servers.server*")
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [
@@ -182,7 +186,8 @@ internal class IndexBasedElasticsearchQueryOptimizerTest {
     val query = optimizer.optimizeBranchQuery("servers.{server1, server2}.cpu.usage")
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [
@@ -233,7 +238,8 @@ internal class IndexBasedElasticsearchQueryOptimizerTest {
     val query = optimizer.optimizeBranchQuery("servers.{server*}.cpu.usage")
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [

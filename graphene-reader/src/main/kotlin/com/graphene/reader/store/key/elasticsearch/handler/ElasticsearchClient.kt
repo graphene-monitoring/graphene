@@ -98,7 +98,8 @@ class ElasticsearchClient(
           response.hits.totalHits +
           " (the limit is " +
           indexProperty.maxPaths() +
-          ")")
+          ")"
+      )
     }
   }
 
@@ -131,7 +132,8 @@ class ElasticsearchClient(
         val tagSearchResults = mutableSetOf<String>()
         if (Objects.nonNull(response.aggregations) &&
           Objects.nonNull(response.aggregations.asMap[AGGREGATION_KEY]) &&
-          ! (response.aggregations.asMap[AGGREGATION_KEY] as ParsedStringTerms).buckets.isNullOrEmpty()) {
+          ! (response.aggregations.asMap[AGGREGATION_KEY] as ParsedStringTerms).buckets.isNullOrEmpty()
+        ) {
           for (bucket in (response.aggregations.asMap[AGGREGATION_KEY] as ParsedStringTerms).buckets) {
             tagSearchResults.add(bucket.keyAsString)
           }

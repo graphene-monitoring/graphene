@@ -122,11 +122,17 @@ class ElasticsearchClientTemplate(
       bulkRequest.add(indexRequest)
     }
 
-    restHighLevelClient.bulkAsync(bulkRequest, default, ActionListener.wrap({
-      logger.info("Succeed to be in ${it.items.size} indexes")
-    }, {
-      logger.error("Fail to index", it)
-    }))
+    restHighLevelClient.bulkAsync(
+      bulkRequest, default,
+      ActionListener.wrap(
+        {
+          logger.info("Succeed to be in ${it.items.size} indexes")
+        },
+        {
+          logger.error("Fail to index", it)
+        }
+      )
+    )
   }
 
   override fun createIndexIfNotExists(index: String, tenant: String, from: Long?, to: Long?) {

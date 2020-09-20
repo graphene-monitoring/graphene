@@ -23,10 +23,13 @@ internal class IndexBasedKeySearchHandlerTest {
   internal fun `should return hierarchy metric paths group by text#1`() {
     // given
     val response = ElasticsearchClient.Response.of(
-      ElasticsearchTestUtils.searchResponse(arrayOf(
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server1"), Pair("2", "cpu"), Pair("3", "usage")),
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server2"), Pair("2", "cpu"), Pair("3", "usage"))
-      )))
+      ElasticsearchTestUtils.searchResponse(
+        arrayOf(
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server1"), Pair("2", "cpu"), Pair("3", "usage")),
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server2"), Pair("2", "cpu"), Pair("3", "usage"))
+        )
+      )
+    )
 
     every { elasticsearchClient.query(any(), any(), any()) } answers { response }
     every { elasticsearchClient.searchScroll(any()) } answers { ElasticsearchTestUtils.emptyResponse() }
@@ -55,10 +58,13 @@ internal class IndexBasedKeySearchHandlerTest {
   internal fun `should return hierarchy metric paths group by text#2`() {
     // given
     val response = ElasticsearchClient.Response.of(
-      ElasticsearchTestUtils.searchResponse(arrayOf(
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server1"), Pair("2", "cpu"), Pair("3", "usage")),
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server2"), Pair("2", "cpu"), Pair("3", "usage"))
-      )))
+      ElasticsearchTestUtils.searchResponse(
+        arrayOf(
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server1"), Pair("2", "cpu"), Pair("3", "usage")),
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server2"), Pair("2", "cpu"), Pair("3", "usage"))
+        )
+      )
+    )
 
     every { elasticsearchClient.query(any(), any(), any()) } answers { response }
     every { elasticsearchClient.searchScroll(any()) } answers { ElasticsearchTestUtils.emptyResponse() }
@@ -81,17 +87,21 @@ internal class IndexBasedKeySearchHandlerTest {
         "servers.server1",
         "servers.server2"
       ),
-      extractGraphitePaths(hierarchyMetricPaths))
+      extractGraphitePaths(hierarchyMetricPaths)
+    )
   }
 
   @Test
   internal fun `should get metric paths group by id`() {
     // given
     val response = ElasticsearchClient.Response.of(
-      ElasticsearchTestUtils.searchResponse(arrayOf(
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server1"), Pair("2", "cpu"), Pair("3", "usage")),
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server2"), Pair("2", "cpu"), Pair("3", "usage"))
-      )))
+      ElasticsearchTestUtils.searchResponse(
+        arrayOf(
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server1"), Pair("2", "cpu"), Pair("3", "usage")),
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server2"), Pair("2", "cpu"), Pair("3", "usage"))
+        )
+      )
+    )
 
     every { elasticsearchClient.query(any(), any(), any()) } answers { response }
     every { elasticsearchClient.searchScroll(any()) } answers { ElasticsearchTestUtils.emptyResponse() }
@@ -114,20 +124,24 @@ internal class IndexBasedKeySearchHandlerTest {
         Path("servers.server1.cpu.usage"),
         Path("servers.server2.cpu.usage")
       ),
-      metricPaths.toList())
+      metricPaths.toList()
+    )
   }
 
   @Test
   internal fun `should remove duplication text if is the same index`() {
     // given
     val response = ElasticsearchClient.Response.of(
-      ElasticsearchTestUtils.searchResponse(arrayOf(
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"), Pair("3", "d")),
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "d"), Pair("3", "d")),
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"), Pair("3", "e")),
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"), Pair("3", "t")),
-        arrayOf(Pair("depth", 3), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"))
-      )))
+      ElasticsearchTestUtils.searchResponse(
+        arrayOf(
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"), Pair("3", "d")),
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "d"), Pair("3", "d")),
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"), Pair("3", "e")),
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"), Pair("3", "t")),
+          arrayOf(Pair("depth", 3), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"))
+        )
+      )
+    )
 
     every { elasticsearchClient.query(any(), any(), any()) } answers { response }
     every { elasticsearchClient.searchScroll(any()) } answers { ElasticsearchTestUtils.emptyResponse() }
@@ -150,19 +164,23 @@ internal class IndexBasedKeySearchHandlerTest {
         "a.b.c",
         "a.b.d"
       ),
-      extractGraphitePaths(hierarchyMetricPaths))
+      extractGraphitePaths(hierarchyMetricPaths)
+    )
   }
 
   @Test
   internal fun `should get hierarchy metric path without low depth key`() {
     // given
     val response = ElasticsearchClient.Response.of(
-      ElasticsearchTestUtils.searchResponse(arrayOf(
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"), Pair("3", "1")),
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"), Pair("3", "2")),
-        // Low depth key
-        arrayOf(Pair("depth", 3), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "d"))
-      )))
+      ElasticsearchTestUtils.searchResponse(
+        arrayOf(
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"), Pair("3", "1")),
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "c"), Pair("3", "2")),
+          // Low depth key
+          arrayOf(Pair("depth", 3), Pair("leaf", true), Pair("0", "a"), Pair("1", "b"), Pair("2", "d"))
+        )
+      )
+    )
 
     every { elasticsearchClient.query(any(), any(), any()) } answers { response }
     every { elasticsearchClient.searchScroll(any()) } answers { ElasticsearchTestUtils.emptyResponse() }
@@ -185,16 +203,20 @@ internal class IndexBasedKeySearchHandlerTest {
         "a.b.c.1",
         "a.b.c.2"
       ),
-      extractGraphitePaths(hierarchyMetricPaths))
+      extractGraphitePaths(hierarchyMetricPaths)
+    )
   }
 
   @Test
   internal fun `should return hierarchy metric paths composited by branch`() {
     // given
     val response = ElasticsearchClient.Response.of(
-      ElasticsearchTestUtils.searchResponse(arrayOf(
-        arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server1"), Pair("2", "cpu"), Pair("3", "usage"))
-      )))
+      ElasticsearchTestUtils.searchResponse(
+        arrayOf(
+          arrayOf(Pair("depth", 4), Pair("leaf", true), Pair("0", "servers"), Pair("1", "server1"), Pair("2", "cpu"), Pair("3", "usage"))
+        )
+      )
+    )
 
     every { elasticsearchClient.query(any(), any(), any()) } answers { response }
     every { elasticsearchClient.searchScroll(any()) } answers { ElasticsearchTestUtils.emptyResponse() }

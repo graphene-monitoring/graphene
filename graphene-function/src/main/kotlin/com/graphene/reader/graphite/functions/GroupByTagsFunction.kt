@@ -27,15 +27,21 @@ class GroupByTagsFunction(text: String?) : GrapheneFunction(text, "groupByTags")
 
   @Throws(InvalidArgumentException::class)
   override fun checkArguments() {
-    check(arguments.size >= 3,
-      "groupByTags: number of arguments is " + arguments.size + ". Must be a least two.")
+    check(
+      arguments.size >= 3,
+      "groupByTags: number of arguments is " + arguments.size + ". Must be a least two."
+    )
     val argSeries: Optional<Any> = Optional.ofNullable(arguments[0])
-    check(argSeries.orElse(null) is Target,
-      "groupByTags: argument is " + getClassName(argSeries.orElse(null)) + ". Must be series")
+    check(
+      argSeries.orElse(null) is Target,
+      "groupByTags: argument is " + getClassName(argSeries.orElse(null)) + ". Must be series"
+    )
     for (i in 1 until arguments.size) {
       val argString: Optional<Any> = Optional.ofNullable(arguments[i])
-      check(argString.orElse(null) is String,
-        "groupByTags: argument is " + getClassName(argSeries.orElse(null)) + ". Must be String")
+      check(
+        argString.orElse(null) is String,
+        "groupByTags: argument is " + getClassName(argSeries.orElse(null)) + ". Must be String"
+      )
     }
   }
 }

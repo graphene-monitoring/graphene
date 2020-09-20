@@ -64,30 +64,31 @@ graphene:
       key:
         handlers:
           tag-based-key-store-handler:
+            enabled: true
+            type: "TagBasedKeyStoreHandler"
             tenant: none
             rotation:
               strategy: "timeBasedRotation"
               period: "1w"
-            handler:
-              type: "TagBasedKeyStoreHandler"
-              property:
-                clusterName: "{{getv "/index/elasticsearch/cluster/name" "metric"}}"
-                cluster: "{{getv "/index/elasticsearch/cluster" "elasticsearch"}}"
-                port: {{getv "/index/elasticsearch/port" "9200"}}
-                userName: "{{getv "/index/elasticsearch/username" ""}}"
-                userPassword: "{{getv "/index/elasticsearch/userpassword" ""}}"
-                protocol: "{{getv "/index/elasticsearch/protocol" "http"}}"
-                templateIndexPattern: "tag-based-key-path*"
-                index: "tag-based-key-path"
-                type: "path"
-                bulk:
-                  actions: 10000
-                  interval: 500
+            property:
+              clusterName: "{{getv "/index/elasticsearch/cluster/name" "metric"}}"
+              cluster: "{{getv "/index/elasticsearch/cluster" "elasticsearch"}}"
+              port: {{getv "/index/elasticsearch/port" "9200"}}
+              userName: "{{getv "/index/elasticsearch/username" ""}}"
+              userPassword: "{{getv "/index/elasticsearch/userpassword" ""}}"
+              protocol: "{{getv "/index/elasticsearch/protocol" "http"}}"
+              templateIndexPattern: "tag-based-key-path*"
+              index: "tag-based-key-path"
+              type: "path"
+              bulk:
+                actions: 10000
+                interval: 500
       data:
         handlers:
           {{if exists "/data/handler/simple/enabled"}}
           {{if eq (getv "/data/handler/simple/enabled") "true"}}
           simple-data-store-handler:
+            enabled: {{ getv "/data/handler/simple/enabled" }}
             type: "SimpleDataStoreHandler"
             tenant: NONE
             ttl: {{getv "/data/handler/simple/ttl" "604800"}}
@@ -112,6 +113,7 @@ graphene:
           {{if exists "/data/handler/offset/enabled"}}
           {{if eq (getv "/data/handler/offset/enabled") "true"}}
           offset-based-data-store-handler:
+            enabled: {{ getv "/data/handler/offset/enabled" }}
             type: "OffsetBasedDataStoreHandler"
             tenant: NONE
             ttl: {{getv "/data/handler/offset/ttl" "604800"}}

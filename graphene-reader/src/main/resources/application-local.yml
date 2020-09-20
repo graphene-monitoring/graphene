@@ -1,0 +1,138 @@
+debug: true
+
+logging:
+  level:
+    org.springframework: DEBUG
+    com.graphene: DEBUG
+
+graphene:
+  reader:
+    render:
+      requestTimeout: 30
+      humanReadableNumbers: true
+    store:
+      key:
+        handlers:
+          simple-key-search-handler:
+            key-selector-property:
+              type: "RollingKeySelector"
+              period: "1w"
+            enabled: false
+            tenant: none
+            clusterName: "metric"
+            cluster:
+              - "127.0.0.1"
+            port: 9200
+            userName: ""
+            userPassword: ""
+            protocol: "http"
+            index: "simple-key-path"
+            type: "path"
+            scroll: 10000
+            timeout: 120000
+            maxPaths: 50000
+          index-based-key-search-handler:
+            key-selector-property:
+              type: "RollingKeySelector"
+              period: "1w"
+            enabled: false
+            tenant: none
+            clusterName: "metric"
+            cluster:
+              - "127.0.0.1"
+            port: 9200
+            userName: ""
+            userPassword: ""
+            protocol: "http"
+            index: "index-based-key-path"
+            type: "path"
+            scroll: 10000
+            timeout: 120000
+            maxPaths: 50000
+          tag-based-key-search-handler:
+            key-selector-property:
+              type: "RollingKeySelector"
+              period: "1w"
+            enabled: true
+            tenant: none
+            clusterName: "metric"
+            cluster:
+              - "127.0.0.1"
+            port: 9200
+            userName: ""
+            userPassword: ""
+            protocol: "http"
+            index: "tag-based-key-path"
+            type: "path"
+            scroll: 10000
+            timeout: 120000
+            maxPaths: 200000
+      data:
+        handlers:
+          simple-data-fetch-handler:
+            enabled: false
+            tenant: NONE
+            maxPoints: 60000000
+            keyspace: "metric"
+            columnFamily: "metric"
+            bucketSize: 0
+            rollup: 60
+            property:
+              cluster:
+                - "127.0.0.1"
+              port: 9042
+              userName: "cassandra"
+              userPassword: "cassandra"
+              maxConnections: 2048
+              readTimeout: 10
+              connectTimeout: 10
+              maxRequests: 128
+              maxQueueSize: 4194304 # 4 * 1024 * 1024
+              loadBalancingPolicyName: "TokenDcAwareRoundRobinPolicy"
+              consistencyLevel: "ONE"
+              protocolVersion: "V4"
+          offset-based-data-fetch-handler:
+            enabled: true
+            tenant: NONE
+            maxPoints: 60000000
+            keyspace: "metric_offset"
+            columnFamily: "metric"
+            bucketSize: 30000
+            rollup: 60
+            property:
+              cluster:
+                - "127.0.0.1"
+              port: 9042
+              userName: "cassandra"
+              userPassword: "cassandra"
+              maxConnections: 2048
+              readTimeout: 10
+              connectTimeout: 10
+              maxRequests: 128
+              maxQueueSize: 4194304 # 4 * 1024 * 1024
+              loadBalancingPolicyName: "TokenDcAwareRoundRobinPolicy"
+              consistencyLevel: "ONE"
+              protocolVersion: "V4"
+    throttling:
+      # enable throttling
+      throttlingEnabled: true
+      # total qps limit - i.e. number of allowed requests per second
+      totalQPS: 30
+      #default tenant qps limit
+      defaultQPS: 5
+      # qps per tenant
+      tenants:
+        "my_favorite_tenant": 25
+      #exceptions
+      exceptions:
+        - "testtenant"
+        - "graphite_cluster"
+
+management:
+  metrics:
+    export:
+      graphite:
+        enabled: true
+        host: "localhost"
+        port: 2003
+        protocol: plaintext

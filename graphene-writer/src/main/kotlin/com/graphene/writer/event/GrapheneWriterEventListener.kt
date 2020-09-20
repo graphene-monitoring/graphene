@@ -34,15 +34,15 @@ class GrapheneWriterEventListener(
   private val stats = ConcurrentHashMap<String, StatsRecord>()
 
   @get:ManagedAttribute
-  private var lastStoreSuccess: Long = 0
+  var lastStoreSuccess: Long = 0
   @get:ManagedAttribute
-  private var lastStoreError: Long = 0
+  var lastStoreError: Long = 0
   @get:ManagedAttribute
   var metricsReceived: Long = 0
   @get:ManagedAttribute
   var writeCount: Long = 0
   @get:ManagedAttribute
-  private val lastMetricsReceivedPerTenant = HashMap<String, Long>()
+  val lastMetricsReceivedPerTenant = HashMap<String, Long>()
   @get:ManagedAttribute
   val writeCountPerTenant: Map<String, Long> = HashMap()
 
@@ -58,7 +58,7 @@ class GrapheneWriterEventListener(
     var statsRecord: StatsRecord? = stats[tenant]
     if (statsRecord == null) {
       val newStatsRecord = StatsRecord()
-      statsRecord = (stats as java.util.Map<String, StatsRecord>).putIfAbsent(tenant, newStatsRecord)
+      statsRecord = (stats as MutableMap<String, StatsRecord>).putIfAbsent(tenant, newStatsRecord)
       if (statsRecord == null) {
         statsRecord = newStatsRecord
       }
