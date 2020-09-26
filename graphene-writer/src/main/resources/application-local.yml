@@ -198,6 +198,7 @@ graphene:
 
 server:
   port: 8081
+
 management:
   metrics:
     export:
@@ -206,3 +207,7 @@ management:
         host: "localhost"
         port: 2003
         protocol: plaintext
+        graphite-tags-enabled: true
+    tags:
+      application: graphene-writer
+      env: local

@@ -113,14 +113,13 @@ graphene:
               loadBalancingPolicyName: "TokenDcAwareRoundRobinPolicy"
               consistencyLevel: "ONE"
               protocolVersion: "V4"
-    throttling:
       # enable throttling
       throttlingEnabled: true
       # total qps limit - i.e. number of allowed requests per second
       totalQPS: 30
       #default tenant qps limit
       defaultQPS: 5
-      # qps per tenant
+      # qps per tenant    throttling:
       tenants:
         "my_favorite_tenant": 25
       #exceptions
@@ -136,3 +135,7 @@ management:
         host: "localhost"
         port: 2003
         protocol: plaintext
+        graphite-tags-enabled: true
+    tags:
+      application: graphene-reader
+      env: local
