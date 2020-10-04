@@ -14,7 +14,8 @@ internal class ElasticsearchIntegratedTagSearchQueryOptimizerTest {
     val query = optimizer.optimize(TagSearchTarget(tagKey = "server", tagValue = "a", tagExpressions = arrayListOf("az=a", "dc=x") as List<String>))
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [
@@ -67,7 +68,8 @@ internal class ElasticsearchIntegratedTagSearchQueryOptimizerTest {
     val query = optimizer.optimize(TagSearchTarget(tagKey = "server", tagExpressions = arrayListOf("az=a", "dc=x") as List<String>))
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [
@@ -110,7 +112,8 @@ internal class ElasticsearchIntegratedTagSearchQueryOptimizerTest {
     val query = optimizer.optimize(TagSearchTarget(tagExpressions = arrayListOf("az=a", "dc!=x") as List<String>))
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [
@@ -149,7 +152,8 @@ internal class ElasticsearchIntegratedTagSearchQueryOptimizerTest {
     val query = optimizer.optimize(TagSearchTarget(tagExpressions = arrayListOf("az=a", "dc={x,y}") as List<String>))
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [
@@ -187,7 +191,8 @@ internal class ElasticsearchIntegratedTagSearchQueryOptimizerTest {
     val query = optimizer.optimize(TagSearchTarget(tagExpressions = arrayListOf("az=a", "dc=~{a,b}") as List<String>))
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [
@@ -226,7 +231,8 @@ internal class ElasticsearchIntegratedTagSearchQueryOptimizerTest {
     val query = optimizer.optimize(TagSearchTarget(tagExpressions = arrayListOf("az=a", "dc!=~a*") as List<String>))
 
     // then
-    val expectedQuery = """
+    val expectedQuery =
+      """
     {
       "bool" : {
         "filter" : [

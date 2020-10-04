@@ -15,10 +15,12 @@ internal class GrapheneMetricTest {
       Source.GRAPHITE,
       "a.b.c",
       Collections.emptyMap(),
-      TreeMap(mapOf(
-        Pair("0", "a"),
-        Pair("1", "b"),
-        Pair("2", "c"))
+      TreeMap(
+        mapOf(
+          Pair("0", "a"),
+          Pair("1", "b"),
+          Pair("2", "c")
+        )
       ),
       TreeMap(),
       value = 1.0,

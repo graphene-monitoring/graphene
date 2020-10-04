@@ -33,9 +33,12 @@ class GrapheneProcessor(
     storeHandlers.addAll(storeHandlerFactory.keyStoreHandlers())
     storeHandlers.addAll(storeHandlerFactory.dataStoreHandlers())
     scheduler = Executors.newSingleThreadScheduledExecutor()
-    scheduler.scheduleWithFixedDelay({
-      log.info("Drop count : $dropCount")
-    }, 10, 10, TimeUnit.SECONDS)
+    scheduler.scheduleWithFixedDelay(
+      {
+        log.info("Drop count : $dropCount")
+      },
+      10, 10, TimeUnit.SECONDS
+    )
   }
 
   @Async("grapheneProcessorExecutor")

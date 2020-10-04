@@ -20,22 +20,27 @@ internal class GraphiteMetricConverterTest {
     val timestamp = DateTimeUtils.currentTimeMillis()
 
     // when
-    val grapheneMetric = graphiteMetricConverter.convert(GraphiteMetric(
-      key,
-      value,
-      timestamp
-    ))[0]
+    val grapheneMetric = graphiteMetricConverter.convert(
+      GraphiteMetric(
+        key,
+        value,
+        timestamp
+      )
+    )[0]
 
     // then
-    assertEquals(GrapheneMetric(
-      Source.GRAPHITE,
-      "a.b.c",
-      Collections.emptyMap(),
-      TreeMap(),
-      TreeMap(mutableMapOf(Pair("0", "a"), Pair("1", "b"), Pair("2", "c"))),
-      1.0,
-      timestamp
-    ), grapheneMetric)
+    assertEquals(
+      GrapheneMetric(
+        Source.GRAPHITE,
+        "a.b.c",
+        Collections.emptyMap(),
+        TreeMap(),
+        TreeMap(mutableMapOf(Pair("0", "a"), Pair("1", "b"), Pair("2", "c"))),
+        1.0,
+        timestamp
+      ),
+      grapheneMetric
+    )
   }
 
   @Test
@@ -46,22 +51,27 @@ internal class GraphiteMetricConverterTest {
     val timestamp = DateTimeUtils.currentTimeMillis()
 
     // when
-    val grapheneMetric = graphiteMetricConverter.convert(GraphiteMetric(
-      key,
-      value,
-      timestamp
-    ))[0]
+    val grapheneMetric = graphiteMetricConverter.convert(
+      GraphiteMetric(
+        key,
+        value,
+        timestamp
+      )
+    )[0]
 
     // then
-    assertEquals(GrapheneMetric(
-      Source.GRAPHITE,
-      "a.b.unknown.c",
-      Collections.emptyMap(),
-      TreeMap(),
-      TreeMap(mutableMapOf(Pair("0", "a"), Pair("1", "b"), Pair("2", "unknown"), Pair("3", "c"))),
-      1.0,
-      timestamp
-    ), grapheneMetric)
+    assertEquals(
+      GrapheneMetric(
+        Source.GRAPHITE,
+        "a.b.unknown.c",
+        Collections.emptyMap(),
+        TreeMap(),
+        TreeMap(mutableMapOf(Pair("0", "a"), Pair("1", "b"), Pair("2", "unknown"), Pair("3", "c"))),
+        1.0,
+        timestamp
+      ),
+      grapheneMetric
+    )
   }
 
   @Test
@@ -72,22 +82,27 @@ internal class GraphiteMetricConverterTest {
     val timestamp = DateTimeUtils.currentTimeMillis()
 
     // when
-    val grapheneMetric = graphiteMetricConverter.convert(GraphiteMetric(
-      key,
-      value,
-      timestamp
-    ))[0]
+    val grapheneMetric = graphiteMetricConverter.convert(
+      GraphiteMetric(
+        key,
+        value,
+        timestamp
+      )
+    )[0]
 
     // then
-    assertEquals(GrapheneMetric(
-      Source.GRAPHITE_TAG,
-      "cpu.usage;hostname=local",
-      Collections.emptyMap(),
-      TreeMap(mutableMapOf(Pair("hostname", "local"))),
-      TreeMap(mutableMapOf(Pair("0", "cpu"), Pair("1", "usage"))),
-      1.0,
-      timestamp
-    ), grapheneMetric)
+    assertEquals(
+      GrapheneMetric(
+        Source.GRAPHITE_TAG,
+        "cpu.usage;hostname=local",
+        Collections.emptyMap(),
+        TreeMap(mutableMapOf(Pair("hostname", "local"))),
+        TreeMap(mutableMapOf(Pair("0", "cpu"), Pair("1", "usage"))),
+        1.0,
+        timestamp
+      ),
+      grapheneMetric
+    )
   }
 
   @Test
@@ -98,21 +113,26 @@ internal class GraphiteMetricConverterTest {
     val timestamp = DateTimeUtils.currentTimeMillis()
 
     // when
-    val grapheneMetric = graphiteMetricConverter.convert(GraphiteMetric(
-      key,
-      value,
-      timestamp
-    ))[0]
+    val grapheneMetric = graphiteMetricConverter.convert(
+      GraphiteMetric(
+        key,
+        value,
+        timestamp
+      )
+    )[0]
 
     // then
-    assertEquals(GrapheneMetric(
-      Source.GRAPHITE_TAG,
-      "cpu.unknown.usage;hostname=local",
-      Collections.emptyMap(),
-      TreeMap(mutableMapOf(Pair("hostname", "local"))),
-      TreeMap(mutableMapOf(Pair("0", "cpu"), Pair("1", "unknown"), Pair("2", "usage"))),
-      1.0,
-      timestamp
-    ), grapheneMetric)
+    assertEquals(
+      GrapheneMetric(
+        Source.GRAPHITE_TAG,
+        "cpu.unknown.usage;hostname=local",
+        Collections.emptyMap(),
+        TreeMap(mutableMapOf(Pair("hostname", "local"))),
+        TreeMap(mutableMapOf(Pair("0", "cpu"), Pair("1", "unknown"), Pair("2", "usage"))),
+        1.0,
+        timestamp
+      ),
+      grapheneMetric
+    )
   }
 }

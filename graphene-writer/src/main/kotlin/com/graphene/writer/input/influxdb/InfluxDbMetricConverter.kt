@@ -77,14 +77,17 @@ class InfluxDbMetricConverter : MetricConverter<String> {
               for (tag in tags) {
                 id += withAndOperator(tag, tags)
               }
-              grapheneMetrics.add(GrapheneMetric(
-                source = Source.INFLUXDB,
-                id = id,
-                meta = meta,
-                tags = tags,
-                nodes = TreeMap(),
-                value = toDouble(tmpRegistry),
-                timestampSeconds = 1L))
+              grapheneMetrics.add(
+                GrapheneMetric(
+                  source = Source.INFLUXDB,
+                  id = id,
+                  meta = meta,
+                  tags = tags,
+                  nodes = TreeMap(),
+                  value = toDouble(tmpRegistry),
+                  timestampSeconds = 1L
+                )
+              )
               tmpKey = null
               tmpRegistry.clear()
               stage = ConvertStage.FIELD_KEY
@@ -96,14 +99,17 @@ class InfluxDbMetricConverter : MetricConverter<String> {
               for (tag in tags) {
                 id += withAndOperator(tag, tags)
               }
-              grapheneMetrics.add(GrapheneMetric(
-                source = Source.INFLUXDB,
-                id = id,
-                meta = meta,
-                tags = tags,
-                nodes = TreeMap(),
-                value = toDouble(tmpRegistry),
-                timestampSeconds = 1L))
+              grapheneMetrics.add(
+                GrapheneMetric(
+                  source = Source.INFLUXDB,
+                  id = id,
+                  meta = meta,
+                  tags = tags,
+                  nodes = TreeMap(),
+                  value = toDouble(tmpRegistry),
+                  timestampSeconds = 1L
+                )
+              )
               tmpKey = null
               tmpRegistry.clear()
               stage = ConvertStage.TIMESTAMP

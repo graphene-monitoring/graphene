@@ -1,7 +1,6 @@
 package com.graphene.writer.store.key.elasticsearch.handler
 
 import com.graphene.common.utils.DateTimeUtils
-import com.graphene.reader.utils.Jsons
 import com.graphene.writer.input.GrapheneMetric
 import com.graphene.writer.store.KeyStoreHandler
 import com.graphene.writer.store.KeyStoreHandlerProperty
@@ -45,15 +44,15 @@ abstract class AbstractElasticsearchKeyStoreHandler(
   private val keyCache: KeyCache<String> = SimpleLocalKeyCache(5) // Default 5 Min
 
   init {
-    val property = Jsons.from(keyStoreHandlerProperty.handler["property"], ElasticsearchKeyStoreHandlerProperty::class.java)
+    val property = keyStoreHandlerProperty.property
     logger = LogManager.getLogger(this::class.java)
 
     index = property.index
     type = property.type
     tenant = keyStoreHandlerProperty.tenant
     templateIndexPattern = property.templateIndexPattern
-    batchSize = property.bulk!!.actions
-    flushInterval = property.bulk!!.interval
+    batchSize = property.bulk.actions
+    flushInterval = property.bulk.interval
 
     elasticsearchClient = elasticsearchClient(keyStoreHandlerProperty, elasticsearchClientFactory, property)
     elasticsearchClient.createTemplateIfNotExists(templateIndexPattern, templateName(), templateSource())
@@ -66,7 +65,7 @@ abstract class AbstractElasticsearchKeyStoreHandler(
   }
 
   private fun elasticsearchClient(keyStoreHandlerProperty: KeyStoreHandlerProperty, elasticsearchClientFactory: ElasticsearchClientFactory, property: ElasticsearchKeyStoreHandlerProperty): ElasticsearchClient {
-    return elasticsearchClientFactory.createElasticsearchClient(keyStoreHandlerProperty.rotation, listOf(property.cluster), property.port, property.userName, property.userPassword, property.protocol)
+    return elasticsearchClientFactory.createElasticsearchClient(keyStoreHandlerProperty.rotation, property.cluster, property.port, property.userName, property.userPassword, property.protocol)
   }
 
   override fun handle(grapheneMetric: GrapheneMetric) {

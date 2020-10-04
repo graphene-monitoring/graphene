@@ -36,7 +36,7 @@ class TagBasedKeyStoreHandler(
       return Collections.emptyList<GrapheneIndexRequest>()
     }
     val grapheneIndexRequests = mutableListOf<GrapheneIndexRequest>()
-    grapheneIndexRequests.add(GrapheneIndexRequest("${metric!!.id}", source(metric.tags, metric), metric.timestampMillis()))
+    grapheneIndexRequests.add(GrapheneIndexRequest(metric.id, source(metric.tags, metric), metric.timestampMillis()))
     return grapheneIndexRequests
   }
 
@@ -62,7 +62,8 @@ class TagBasedKeyStoreHandler(
     const val TEMPLATE_NAME = "tag-based-key-path-template"
     const val TAGS_FIELD = "@tags"
     const val NAME_FIELD = "@name"
-    const val SOURCE = """
+    const val SOURCE =
+      """
       {
         "settings": {
           "number_of_replicas": 0,

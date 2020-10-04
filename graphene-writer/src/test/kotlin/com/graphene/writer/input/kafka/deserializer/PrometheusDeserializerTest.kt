@@ -142,7 +142,8 @@ internal class PrometheusDeserializerTest {
         |
       """.trimMargin("|")
 
-    var SINGLE_PROMETHEUS_UNTYPED_METRIC = """# HELP jvm_gc_CollectionCount Telegraf collected metric
+    var SINGLE_PROMETHEUS_UNTYPED_METRIC =
+      """# HELP jvm_gc_CollectionCount Telegraf collected metric
       |# TYPE jvm_gc_CollectionCount untyped
       |jvm_gc_CollectionCount{host="localhost",name="G1 Old Generation"} 0 1580532000000
       |jvm_gc_CollectionCount{host="localhost",name="G1 Young Generation"} 14937 1580532000000

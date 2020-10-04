@@ -42,18 +42,24 @@ class AliasByTagsFunction(text: String?) : GrapheneFunction(text, "aliasByTags")
 
   @Throws(InvalidArgumentException::class)
   override fun checkArguments() {
-    check(arguments.size >= 2,
+    check(
+      arguments.size >= 2,
       "aliasByTags: number of arguments is " +
-        arguments.size + ". Must be at least two.")
+        arguments.size + ". Must be at least two."
+    )
     val argSeries: Optional<Any> = Optional.ofNullable(arguments[0])
-    check(argSeries.orElse(null) is Target,
+    check(
+      argSeries.orElse(null) is Target,
       "aliasByTags: First argument is " +
-        getClassName(argSeries.orElse(null)) + ". Must be series.")
+        getClassName(argSeries.orElse(null)) + ". Must be series."
+    )
     for (i in 1 until arguments.size) {
       val argNumber: Optional<Any> = Optional.ofNullable(arguments[i])
-      check(argNumber.orElse(null) is String,
+      check(
+        argNumber.orElse(null) is String,
         "aliasByTags: argument is " +
-          getClassName(argNumber.orElse(null)) + ". Must be a string.")
+          getClassName(argNumber.orElse(null)) + ". Must be a string."
+      )
     }
   }
 }

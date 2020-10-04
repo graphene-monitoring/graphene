@@ -1,5 +1,5 @@
 plugins {
-  id("org.jetbrains.intellij") version "0.4.1"  
+  id("org.jetbrains.intellij") version "0.4.26"
 }
 
 apply plugin: 'org.jetbrains.intellij'
@@ -14,7 +14,9 @@ repositories {
 dependencies {
   // https://github.com/antlr/intellij-plugin-v4/issues/316
   antlr "org.antlr:antlr4:4.7.2"
-  implementation 'org.antlr:antlr4-runtime:4.7'
+  implementation 'org.antlr:antlr4-runtime:4.7.2'
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+  compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 }
 
 generateGrammarSource {

@@ -18,8 +18,10 @@ class CassandraLoadBalancingPolicy {
         tokenAwarePolicy -> TokenAwarePolicy(RoundRobinPolicy())
         tokenDcAwareRoundRobinPolicy -> TokenAwarePolicy(DCAwareRoundRobinPolicy.builder().build())
         tokenLatencyAwarePolicy -> TokenAwarePolicy(LatencyAwarePolicy.builder(RoundRobinPolicy()).build())
-        else -> throw IllegalArgumentException("Cassandra load balancing policy can be $tokenAwarePolicy , " +
-          "$tokenLatencyAwarePolicy , $tokenDcAwareRoundRobinPolicy")
+        else -> throw IllegalArgumentException(
+          "Cassandra load balancing policy can be $tokenAwarePolicy , " +
+            "$tokenLatencyAwarePolicy , $tokenDcAwareRoundRobinPolicy"
+        )
       }
     }
   }
