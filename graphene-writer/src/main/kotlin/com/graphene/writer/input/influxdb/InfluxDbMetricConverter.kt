@@ -19,7 +19,8 @@ import java.util.concurrent.TimeUnit
  */
 class InfluxDbMetricConverter : MetricConverter<String> {
 
-  override fun convert(metric: String): List<GrapheneMetric> {
+  override fun convert(metricStr: String): List<GrapheneMetric> {
+    val metric = metricStr.replace("\\ ", "_")
     try {
       var stage = ConvertStage.MEASUREMENT
 
@@ -36,14 +37,14 @@ class InfluxDbMetricConverter : MetricConverter<String> {
         when (stage) {
           ConvertStage.MEASUREMENT -> {
             if (char == ',') {
-              meta["@measurement"] = tmpRegistry.toString()
+              meta["@measurement"] = tmpRegistry.toString().replace(".", "_")
               tmpRegistry.clear()
               stage = ConvertStage.TAG_KEY
             }
           }
           ConvertStage.TAG_KEY -> {
             if (char == '=') {
-              tmpKey = tmpRegistry.toString()
+              tmpKey = tmpRegistry.toString().replace(".", "_")
               tmpRegistry.clear()
               stage = ConvertStage.TAG_VALUE
             }
@@ -65,7 +66,7 @@ class InfluxDbMetricConverter : MetricConverter<String> {
           }
           ConvertStage.FIELD_KEY -> {
             if (char == '=') {
-              tmpKey = tmpRegistry.toString()
+              tmpKey = tmpRegistry.toString().replace(".", "_")
               tmpRegistry.clear()
               stage = ConvertStage.FIELD_VALUE
             }
@@ -77,17 +78,14 @@ class InfluxDbMetricConverter : MetricConverter<String> {
               for (tag in tags) {
                 id += withAndOperator(tag, tags)
               }
-              grapheneMetrics.add(
-                GrapheneMetric(
-                  source = Source.INFLUXDB,
-                  id = id,
-                  meta = meta,
-                  tags = tags,
-                  nodes = TreeMap(),
-                  value = toDouble(tmpRegistry),
-                  timestampSeconds = 1L
-                )
-              )
+              grapheneMetrics.add(GrapheneMetric(
+                source = Source.INFLUXDB,
+                id = id,
+                meta = meta,
+                tags = tags,
+                nodes = TreeMap(),
+                value = toDouble(tmpRegistry) ?: 0.0,
+                timestampSeconds = 1L))
               tmpKey = null
               tmpRegistry.clear()
               stage = ConvertStage.FIELD_KEY
@@ -99,17 +97,14 @@ class InfluxDbMetricConverter : MetricConverter<String> {
               for (tag in tags) {
                 id += withAndOperator(tag, tags)
               }
-              grapheneMetrics.add(
-                GrapheneMetric(
-                  source = Source.INFLUXDB,
-                  id = id,
-                  meta = meta,
-                  tags = tags,
-                  nodes = TreeMap(),
-                  value = toDouble(tmpRegistry),
-                  timestampSeconds = 1L
-                )
-              )
+              grapheneMetrics.add(GrapheneMetric(
+                source = Source.INFLUXDB,
+                id = id,
+                meta = meta,
+                tags = tags,
+                nodes = TreeMap(),
+                value = toDouble(tmpRegistry) ?: 0.0,
+                timestampSeconds = 1L))
               tmpKey = null
               tmpRegistry.clear()
               stage = ConvertStage.TIMESTAMP
@@ -151,13 +146,17 @@ class InfluxDbMetricConverter : MetricConverter<String> {
     }
   }
 
-  private fun toDouble(tmpRegistry: StringBuilder): Double {
+  private fun toDouble(tmpRegistry: StringBuilder): Double? {
     var value = if (tmpRegistry.last() == 'i') {
       tmpRegistry.substring(0, tmpRegistry.lastIndex)
     } else {
       tmpRegistry.toString()
     }
 
-    return value.toDouble()
+    return try {
+      value.toDouble()
+    } catch (e: NumberFormatException) {
+      null
+    }
   }
 }
