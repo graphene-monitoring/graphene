@@ -140,5 +140,19 @@ graphene:
       tenant: "NONE"
       hostname: "{{getenv "HOST_NAME" "localhost"}}"
       log: true
+
+management:
+  metrics:
+    export:
+      graphite:
+        enabled: {{getv "/metrics/report/enabled" "true"}}
+        host: "{{getv "/metrics/report/host" "localhost"}}"
+        port: {{getv "/metrics/report/port" "2003"}}
+        protocol: plaintext
+        graphite-tags-enabled: true
+    tags:
+      application: graphene-writer
+      env: {{getv "/metrics/report/env" "production"}}
+
 server:
   port: 8081
