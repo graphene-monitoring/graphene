@@ -67,7 +67,8 @@ class SimpleDataStoreHandler(
           logger.error(t)
         }
       },
-      executor)
+      executor
+    )
   }
 
   private fun boundStatement(grapheneMetric: GrapheneMetric): BoundStatement {

@@ -31,7 +31,8 @@ class Metric {
     this.key = MetricKey(
       if (splitInput.size >= 4) splitInput[3].intern() else MetricRule.defaultTenant(),
       splitInput[0],
-      java.lang.Long.parseLong(splitInput[2]))
+      java.lang.Long.parseLong(splitInput[2])
+    )
     this.value = java.lang.Double.parseDouble(splitInput[1])
   }
 

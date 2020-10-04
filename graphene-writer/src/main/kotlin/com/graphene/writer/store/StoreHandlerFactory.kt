@@ -12,6 +12,7 @@ import com.graphene.writer.store.key.elasticsearch.handler.IndexBasedKeyStoreHan
 import com.graphene.writer.store.key.elasticsearch.handler.LoggingKeyStoreHandler
 import com.graphene.writer.store.key.elasticsearch.handler.SimpleKeyStoreHandler
 import com.graphene.writer.store.key.elasticsearch.handler.TagBasedKeyStoreHandler
+import com.graphene.writer.store.key.elasticsearch.property.ElasticsearchKeyStoreHandlerProperty
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
@@ -37,16 +38,17 @@ class StoreHandlerFactory(
     val keyStoreHandlers = mutableListOf<KeyStoreHandler>()
     for (handler in keyStoreHandlersProperty.handlers) {
       log.info("KeyStoreHandlerFactory Key : ${handler.key} / Value : ${handler.value}")
-
-      when (val storeHandlerType = keyStoreHandlersProperty.handlers[handler.key]!!.handler["type"]) {
-        "LoggingKeyStoreHandler" -> keyStoreHandlers.add(createLoggingKeyStoreHandler(handler.key, handler.value))
-        "SimpleKeyStoreHandler" -> keyStoreHandlers.add(createSimpleKeyStoreHandler(handler.key, handler.value))
-        "IndexBasedKeyStoreHandler" -> keyStoreHandlers.add(createIndexBasedKeyStoreHandler(handler.key, handler.value))
-        "TagBasedKeyStoreHandler" -> keyStoreHandlers.add(createTagBasedKeyStoreHandler(handler.key, handler.value))
-        else -> throw Errors.UNSUPPORTED_KEY_STORE_HANDLER_EXCEPTION.exception("$storeHandlerType is not supported!")
+      val keyStoreHandler = keyStoreHandlersProperty.handlers[handler.key]!!
+      if (keyStoreHandler.enabled) {
+        when (val storeHandlerType = keyStoreHandler.type) {
+          "LoggingKeyStoreHandler" -> keyStoreHandlers.add(createLoggingKeyStoreHandler(handler.key))
+          "SimpleKeyStoreHandler" -> keyStoreHandlers.add(createSimpleKeyStoreHandler(handler.key, handler.value))
+          "IndexBasedKeyStoreHandler" -> keyStoreHandlers.add(createIndexBasedKeyStoreHandler(handler.key, handler.value))
+          "TagBasedKeyStoreHandler" -> keyStoreHandlers.add(createTagBasedKeyStoreHandler(handler.key, handler.value))
+          else -> throw Errors.UNSUPPORTED_KEY_STORE_HANDLER_EXCEPTION.exception("$storeHandlerType is not supported!")
+        }
       }
     }
-
     return keyStoreHandlers
   }
 
@@ -81,11 +83,13 @@ class StoreHandlerFactory(
     val dataStoreHandlers = mutableListOf<DataStoreHandler>()
     for (handler in dataStoreHandlersProperty.handlers) {
       log.info("DataStoreHandlerFactory Key : ${handler.key} / Value : ${handler.value}")
-
-      when (val storeHandlerType = dataStoreHandlersProperty.handlers[handler.key]!!.type) {
-        "SimpleDataStoreHandler" -> dataStoreHandlers.add(createSimpleDataStoreHandler(handler.key, handler.value))
-        "OffsetBasedDataStoreHandler" -> dataStoreHandlers.add(createOffsetBasedDataStoreHandler(handler.key, handler.value))
-        else -> throw Errors.UNSUPPORTED_DATA_STORE_HANDLER_EXCEPTION.exception("$storeHandlerType is not supported!")
+      val dataStoreHandler = dataStoreHandlersProperty.handlers[handler.key]!!
+      if (dataStoreHandler.enabled) {
+        when (val storeHandlerType = dataStoreHandler.type) {
+          "SimpleDataStoreHandler" -> dataStoreHandlers.add(createSimpleDataStoreHandler(handler.key, handler.value))
+          "OffsetBasedDataStoreHandler" -> dataStoreHandlers.add(createOffsetBasedDataStoreHandler(handler.key, handler.value))
+          else -> throw Errors.UNSUPPORTED_DATA_STORE_HANDLER_EXCEPTION.exception("$storeHandlerType is not supported!")
+        }
       }
     }
     return dataStoreHandlers
@@ -109,7 +113,7 @@ class StoreHandlerFactory(
     )
   }
 
-  private fun createLoggingKeyStoreHandler(handlerId: String, value: KeyStoreHandlerProperty): KeyStoreHandler {
+  private fun createLoggingKeyStoreHandler(handlerId: String): KeyStoreHandler {
     log.info("StoreHandlerFactory Register loggingKeyStoreHandler : $handlerId")
 
     return LoggingKeyStoreHandler()
@@ -123,6 +127,7 @@ data class DataStoreHandlersProperty(
 )
 
 data class DataStoreHandlerProperty(
+  val enabled: Boolean = false,
   var type: String,
   var tenant: String = GrapheneRules.DEFAULT_TENANT,
   var ttl: Int = 0,
@@ -140,9 +145,11 @@ data class KeyStoreHandlersProperty(
 )
 
 data class KeyStoreHandlerProperty(
+  val enabled: Boolean,
+  val type: String,
   var tenant: String = GrapheneRules.DEFAULT_TENANT,
   var rotation: RotationProperty = RotationProperty(),
-  var handler: Map<String, Any> = mapOf()
+  var property: ElasticsearchKeyStoreHandlerProperty = ElasticsearchKeyStoreHandlerProperty()
 )
 
 typealias HandlerId = String

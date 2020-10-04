@@ -2,7 +2,9 @@ package com.graphene.reader.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/** @author Andrei Ivanov */
+/**
+ * @author Andrei Ivanov
+ */
 @ConfigurationProperties("graphene.reader.render")
 public class RenderConfiguration {
   private int requestTimeout = 30;
@@ -27,10 +29,10 @@ public class RenderConfiguration {
   @Override
   public String toString() {
     return "ReaderConfiguration{"
-        + "requestTimeout="
-        + requestTimeout
-        + ", humanReadableNumbers="
-        + humanReadableNumbers
-        + '}';
+      + "requestTimeout="
+      + requestTimeout
+      + ", humanReadableNumbers="
+      + humanReadableNumbers
+      + '}';
   }
 }

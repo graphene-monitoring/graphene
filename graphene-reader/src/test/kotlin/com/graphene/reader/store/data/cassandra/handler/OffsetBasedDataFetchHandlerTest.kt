@@ -84,7 +84,8 @@ internal class OffsetBasedDataFetchHandlerTest {
   @Test
   internal fun `should query to proper keyspace, table with rollup = 60 and bucketSize = 300`() {
     // given
-    val query = """
+    val query =
+      """
     SELECT offset, data
         FROM metric_offset_5.metric_60s
         WHERE path = ?
@@ -92,7 +93,8 @@ internal class OffsetBasedDataFetchHandlerTest {
               AND startTime = ?
               AND offset >= ?
               AND offset <= ?
-        ORDER BY offset;""".trimIndent()
+        ORDER BY offset;
+      """.trimIndent()
     // when & then
     assertEquals(query, offsetBasedDataFetchHandler.query.trimIndent())
   }

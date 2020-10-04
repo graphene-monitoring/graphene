@@ -69,7 +69,8 @@ class SimpleKeyStoreHandler(
     const val PATH = "path"
 
     const val TEMPLATE_NAME = "simple-key-path-template"
-    const val SOURCE = """
+    const val SOURCE =
+      """
       {
         "settings": {
           "number_of_replicas": 0,

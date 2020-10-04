@@ -12,7 +12,7 @@ class ElasticsearchKeyStoreHandlerProperty(
   var templateIndexPattern: String = "metric*",
   var index: String = "metric",
   var type: String = "path",
-  var cluster: String = "127.0.0.1",
+  var cluster: List<String> = arrayListOf(),
   var port: Int = 9200,
   var userName: String? = "",
   var userPassword: String? = "",

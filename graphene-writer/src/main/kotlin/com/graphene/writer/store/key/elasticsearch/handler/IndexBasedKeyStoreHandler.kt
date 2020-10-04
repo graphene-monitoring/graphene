@@ -24,7 +24,7 @@ class IndexBasedKeyStoreHandler(
   }
 
   override fun mapToGrapheneIndexRequests(metric: GrapheneMetric?): List<GrapheneIndexRequest> {
-    return mutableListOf(GrapheneIndexRequest(metric!!.id!!, source(metric), metric.timestampMillis()))
+    return mutableListOf(GrapheneIndexRequest(metric!!.id, source(metric), metric.timestampMillis()))
   }
 
   override fun templateSource(): String = SOURCE
@@ -51,7 +51,8 @@ class IndexBasedKeyStoreHandler(
     const val LEAF = "leaf"
 
     const val TEMPLATE_NAME = "index-based-key-path-template"
-    const val SOURCE = """
+    const val SOURCE =
+      """
       {
         "settings": {
           "number_of_replicas": 0,

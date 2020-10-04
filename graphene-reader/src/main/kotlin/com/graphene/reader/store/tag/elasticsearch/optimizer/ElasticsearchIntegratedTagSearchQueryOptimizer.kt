@@ -16,7 +16,7 @@ class ElasticsearchIntegratedTagSearchQueryOptimizer : ElasticsearchTagSearchQue
 
   override fun optimize(tagSearchTarget: TagSearchTarget): QueryBuilder {
     val boolQuery = QueryBuilders.boolQuery()
-    addSearchTargetFilter(boolQuery, tagSearchTarget)
+    addTagSearchTargetFilter(boolQuery, tagSearchTarget)
     addQueriesWithTagExpressions(boolQuery, tagSearchTarget.tagExpressions)
     return boolQuery
   }
@@ -68,11 +68,11 @@ class ElasticsearchIntegratedTagSearchQueryOptimizer : ElasticsearchTagSearchQue
     }
   }
 
-  private fun addSearchTargetFilter(boolQuery: BoolQueryBuilder, tagSearchTarget: TagSearchTarget) {
+  private fun addTagSearchTargetFilter(boolQuery: BoolQueryBuilder, tagSearchTarget: TagSearchTarget) {
     if (StringUtils.isNotBlank(tagSearchTarget.tagKey)) {
       boolQuery.filter(QueryBuilders.existsQuery(tagSearchTarget.tagKey))
       if (StringUtils.isNotBlank(tagSearchTarget.tagValue)) {
-        boolQuery.filter(QueryBuilders.prefixQuery(tagSearchTarget.tagKey, tagSearchTarget.tagValue))
+        boolQuery.filter(QueryBuilders.regexpQuery(tagSearchTarget.tagKey, ".*${tagSearchTarget.tagValue}.*"))
       }
     }
   }

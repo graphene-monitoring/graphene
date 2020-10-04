@@ -22,14 +22,18 @@ class SeriesByTagFunction(text: String?) : GrapheneFunction(text, "seriesByTag")
 
   @Throws(InvalidArgumentException::class)
   override fun checkArguments() {
-    check(arguments.size != 0,
+    check(
+      arguments.size != 0,
       "seriesByTag: number of arguments is " +
-        arguments.size + ". Must be at least one.")
+        arguments.size + ". Must be at least one."
+    )
     for (argument in arguments) {
       val argString: Optional<Any> = Optional.ofNullable(argument)
-      check(argString.orElse(null) is String,
+      check(
+        argString.orElse(null) is String,
         "seriesByTag: argument is " +
-          getClassName(argString.orElse(null)) + ". Must be a string.")
+          getClassName(argString.orElse(null)) + ". Must be a string."
+      )
     }
   }
 }

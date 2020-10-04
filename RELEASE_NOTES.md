@@ -1,3 +1,9 @@
+# 1.9.1
+
+## Feature
+- Improved tag autocomplete request performance. [#69](https://github.com/graphene-monitoring/graphene/pull/69)
+  * Users have to migrate documents in Elasticsearch with script located in scripts/v1.9.1/es-index-migration.py
+
 # 1.9.0
 
 ## Feature

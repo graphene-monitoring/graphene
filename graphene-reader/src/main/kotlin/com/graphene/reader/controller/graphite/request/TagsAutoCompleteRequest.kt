@@ -3,7 +3,6 @@ package com.graphene.reader.controller.graphite.request
 import com.graphene.common.utils.DateTimeUtils
 
 data class TagsAutoCompleteRequest(
-  val limit: Int = 100,
   val pretty: Int = 0,
   val expr: List<String> = emptyList(),
   val tag: String = "",

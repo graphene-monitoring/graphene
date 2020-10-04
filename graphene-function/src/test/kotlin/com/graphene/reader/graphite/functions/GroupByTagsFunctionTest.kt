@@ -34,21 +34,27 @@ class GroupByTagsFunctionTest : GrapheneFunctionTestHelper() {
     setUpTimeSeriesList(
       groupByTagsFunction,
       listOf(
-        timeSeriesWithTags(TIME_SERIES_NAME_1,
+        timeSeriesWithTags(
+          TIME_SERIES_NAME_1,
           "2019-10-10 10:00:00",
           "2019-10-10 10:02:00",
           60,
           arrayOf(-0.0, -0.1),
-          mapOf(Pair("host", "i-00"),
-            Pair("dimension", "cpu_user"))
+          mapOf(
+            Pair("host", "i-00"),
+            Pair("dimension", "cpu_user")
+          )
         ),
-        timeSeriesWithTags(TIME_SERIES_NAME_2,
+        timeSeriesWithTags(
+          TIME_SERIES_NAME_2,
           "2019-10-10 10:00:00",
           "2019-10-10 10:02:00",
           60,
           arrayOf(-0.0, -0.1),
-          mapOf(Pair("host", "i-00"),
-            Pair("dimension", "cpu_idle"))
+          mapOf(
+            Pair("host", "i-00"),
+            Pair("dimension", "cpu_idle")
+          )
         )
       )
     )
@@ -86,21 +92,27 @@ class GroupByTagsFunctionTest : GrapheneFunctionTestHelper() {
     setUpTimeSeriesList(
       groupByTagsFunction,
       listOf(
-        timeSeriesWithTags(TIME_SERIES_NAME_1,
+        timeSeriesWithTags(
+          TIME_SERIES_NAME_1,
           "2019-10-10 10:00:00",
           "2019-10-10 10:02:00",
           60,
           arrayOf(-0.0, -0.1),
-          mapOf(Pair("host", "i-00"),
-            Pair("dimension", "cpu_user"))
+          mapOf(
+            Pair("host", "i-00"),
+            Pair("dimension", "cpu_user")
+          )
         ),
-        timeSeriesWithTags(TIME_SERIES_NAME_2,
+        timeSeriesWithTags(
+          TIME_SERIES_NAME_2,
           "2019-10-10 10:00:00",
           "2019-10-10 10:02:00",
           60,
           arrayOf(-0.0, -0.1),
-          mapOf(Pair("host", "i-00"),
-            Pair("dimension", "cpu_idle"))
+          mapOf(
+            Pair("host", "i-00"),
+            Pair("dimension", "cpu_idle")
+          )
         )
       )
     )

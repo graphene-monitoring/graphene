@@ -33,7 +33,8 @@ internal class OffsetBasedDataStoreHandlerTest {
       keyspace = "metric_offset",
       property = CassandraDataHandlerProperty()
     )
-    val query = """
+    val query =
+      """
           UPDATE metric_offset_150.metric_15s
           USING TTL ?
           SET data = ?
@@ -41,7 +42,7 @@ internal class OffsetBasedDataStoreHandlerTest {
                 AND path = ?
                 AND startTime = ?
                 AND offset = ?;
-    """.trimIndent()
+      """.trimIndent()
 
     every { cassandraFactory.createCluster(any()) } answers { cluster }
     every { cluster.connect() } answers { session }

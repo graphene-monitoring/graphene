@@ -47,7 +47,8 @@ class SimpleDataFetchHandler(
   init {
     this.rollup = dataFetchHandlerProperty.rollup
     validateRollup(rollup)
-    this.query = """
+    this.query =
+      """
     SELECT time, data
     FROM ${dataFetchHandlerProperty.keyspace}.${dataFetchHandlerProperty.columnFamily}_${rollup}s
     WHERE path = ?

@@ -41,97 +41,96 @@ import java.util.concurrent.*;
 @Component
 public class RenderHandler {
 
-    final static Logger logger = LogManager.getLogger(RenderHandler.class);
+  final static Logger logger = LogManager.getLogger(RenderHandler.class);
 
-    private TargetEvaluator evaluator;
-    private StatsService statsService;
-    private ThrottlingService throttlingService;
-    private RenderConfiguration renderConfiguration;
+  private final TargetEvaluator evaluator;
+  private final StatsService statsService;
+  private final ThrottlingService throttlingService;
+  private final RenderConfiguration renderConfiguration;
 
-    private static final ExecutorService executor = Executors.newCachedThreadPool();
-    private TimeLimiter timeLimiter = SimpleTimeLimiter.create(executor);
+  private static final ExecutorService executor = Executors.newCachedThreadPool();
+  private final TimeLimiter timeLimiter = SimpleTimeLimiter.create(executor);
 
 
-    public RenderHandler(
-      DataFetchHandler dataFetchHandler,
-      KeySearchHandler keySearchHandler,
-      StatsService statsService,
-      ThrottlingService throttlingService,
-      RenderConfiguration renderConfiguration
-    ) {
-        this.evaluator = new TargetEvaluator(dataFetchHandler, keySearchHandler);
-        this.statsService = statsService;
-        this.throttlingService = throttlingService;
-        this.renderConfiguration = renderConfiguration;
+  public RenderHandler(
+    DataFetchHandler dataFetchHandler,
+    KeySearchHandler keySearchHandler,
+    StatsService statsService,
+    ThrottlingService throttlingService,
+    RenderConfiguration renderConfiguration
+  ) {
+    this.evaluator = new TargetEvaluator(dataFetchHandler, keySearchHandler);
+    this.statsService = statsService;
+    this.throttlingService = throttlingService;
+    this.renderConfiguration = renderConfiguration;
+  }
+
+  public ResponseEntity<?> handle(RenderParameter parameters) throws ParameterParsingException {
+    logger.debug("Render Got request: " + parameters + " / parameters: " + parameters.toString());
+    Stopwatch timer = Stopwatch.createStarted();
+
+    double throttled = throttlingService.throttle(parameters.getTenant());
+
+    statsService.incRenderRequests(parameters.getTenant());
+
+    if (throttled > 0) {
+      statsService.incThrottleTime(parameters.getTenant(), throttled);
     }
 
-    public ResponseEntity<?> handle(RenderParameter parameters) throws ParameterParsingException {
-        logger.debug("Redner Got request: " + parameters + " / parameters: " + parameters.toString());
-        Stopwatch timer = Stopwatch.createStarted();
+    final List<Target> targets = new ArrayList<>();
 
-        double throttled = throttlingService.throttle(parameters.getTenant());
+    EvaluationContext context = new EvaluationContext(
+      renderConfiguration.isHumanReadableNumbers() ? ValueFormatter.getInstance(parameters.getFormat()) : ValueFormatter.getInstance(ValueFormatter.ValueFormatterType.MACHINE)
+    );
 
-        statsService.incRenderRequests(parameters.getTenant());
-
-        if (throttled > 0) {
-            statsService.incThrottleTime(parameters.getTenant(), throttled);
-        }
-
-        final List<Target> targets = new ArrayList<>();
-
-        EvaluationContext context = new EvaluationContext(
-                renderConfiguration.isHumanReadableNumbers() ? ValueFormatter.getInstance(parameters.getFormat()) : ValueFormatter.getInstance(ValueFormatter.ValueFormatterType.MACHINE)
-        );
-
-        // Let's parse the targets
-        for(String targetString : parameters.getTargets()) {
-            GraphiteLexer lexer = new GraphiteLexer(new ANTLRInputStream(targetString));
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-            GraphiteParser parser = new GraphiteParser(tokens);
-            ParseTree tree = parser.expression();
-            try {
-                targets.add(new TargetVisitor(parameters.getTenant(), parameters.getFrom(), parameters.getUntil(), context).visit(tree));
-            } catch (ParseCancellationException e) {
-                String additionalInfo = null;
-                if (e.getMessage() != null) additionalInfo = e.getMessage();
-                if (e.getCause() != null) additionalInfo = e.getCause().getMessage();
-                throw new InvalidParameterValueException("Could not parse target: " + targetString + " (" + additionalInfo + ")");
-            }
-        }
-
-        logger.info("targets : " + targets);
-        ResponseEntity<?> response;
-        try {
-            response = timeLimiter.callWithTimeout(new Callable<ResponseEntity>() {
-                @Override
-                public ResponseEntity<?> call() throws EvaluationException, LogarithmicScaleNotAllowed {
-                    return handleInternal(targets, parameters);
-                }
-            }, renderConfiguration.getRequestTimeout(), TimeUnit.SECONDS);
-        } catch (TimeoutException e) {
-            logger.debug("Request timed out: " + parameters);
-            statsService.incTimedOutRequests(parameters.getTenant());
-            response = ResponseEntity.status(HttpStatus.REQUEST_ENTITY_TOO_LARGE).build();
-        } catch (Exception e) {
-            logger.error(e);
-            response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-        timer.stop();
-        logger.debug("Request took " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds (" + parameters + ")");
-
-        logger.info("Response status : " + response.getStatusCode());
-        return response;
+    // Let's parse the targets
+    for (String targetString : parameters.getTargets()) {
+      GraphiteLexer lexer = new GraphiteLexer(new ANTLRInputStream(targetString));
+      CommonTokenStream tokens = new CommonTokenStream(lexer);
+      GraphiteParser parser = new GraphiteParser(tokens);
+      ParseTree tree = parser.expression();
+      try {
+        targets.add(new TargetVisitor(parameters.getTenant(), parameters.getFrom(), parameters.getUntil(), context).visit(tree));
+      } catch (ParseCancellationException e) {
+        String additionalInfo = null;
+        if (e.getMessage() != null) additionalInfo = e.getMessage();
+        if (e.getCause() != null) additionalInfo = e.getCause().getMessage();
+        throw new InvalidParameterValueException("Could not parse target: " + targetString + " (" + additionalInfo + ")");
+      }
     }
-    private ResponseEntity<?> handleInternal(List<Target> targets, RenderParameter parameters) throws EvaluationException, LogarithmicScaleNotAllowed {
-        // now evaluate each target producing list of TimeSeries
-        List<TimeSeries> results = new ArrayList<>();
 
-        for(Target target : targets) {
-            List<TimeSeries> eval = evaluator.eval(target);
-            results.addAll(eval);
-        }
-
-        return ResponseFormatter.formatResponse(results, parameters);
+    logger.info("targets : " + targets);
+    ResponseEntity<?> response;
+    try {
+      response = timeLimiter.callWithTimeout(
+        (Callable<ResponseEntity>) () ->
+          handleInternal(targets, parameters), renderConfiguration.getRequestTimeout(), TimeUnit.SECONDS);
+    } catch (TimeoutException e) {
+      logger.debug("Request timed out: " + parameters);
+      statsService.incTimedOutRequests(parameters.getTenant());
+      response = ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+        .build();
+    } catch (Exception e) {
+      logger.error(e);
+      response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
+    timer.stop();
+    logger.debug("Request took " + timer.elapsed(TimeUnit.MILLISECONDS) + " milliseconds (" + parameters + ")");
+
+    logger.info("Response status : " + response.getStatusCode());
+    return response;
+  }
+
+  private ResponseEntity<?> handleInternal(List<Target> targets, RenderParameter parameters) throws EvaluationException, LogarithmicScaleNotAllowed {
+    // now evaluate each target producing list of TimeSeries
+    List<TimeSeries> results = new ArrayList<>();
+
+    for (Target target : targets) {
+      List<TimeSeries> eval = evaluator.eval(target);
+      results.addAll(eval);
+    }
+
+    return ResponseFormatter.formatResponse(results, parameters);
+  }
 }
