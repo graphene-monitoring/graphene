@@ -1,4 +1,4 @@
-FROM gradle:5.5.1-jdk8
+FROM gradle:6.6.1-jdk8
 
 #################################
 #         Program version       #
