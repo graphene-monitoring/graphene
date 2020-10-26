@@ -72,12 +72,12 @@ abstract class GrapheneFunctionTestHelper {
     const val TIME_SERIES_NAME_1 = "hosts.server1.cpu.usage"
     const val TIME_SERIES_NAME_2 = "hosts.server2.cpu.usage"
 
-    fun timeSeries(name: String, from: String, to: String, step: Int, values: Array<Double>): TimeSeries {
+    fun timeSeries(name: String, from: String, to: String, step: Int, values: Array<Double?>): TimeSeries {
       val seriesRange = SeriesRange(DateTimeUtils.from(from), DateTimeUtils.from(to), step)
       return TimeSeries(name, name, emptyMap<String, String>(), seriesRange, values)
     }
 
-    fun timeSeriesWithTags(name: String, from: String, to: String, step: Int, values: Array<Double>, tags: Map<String, String>): TimeSeries {
+    fun timeSeriesWithTags(name: String, from: String, to: String, step: Int, values: Array<Double?>, tags: Map<String, String>): TimeSeries {
       val ts = timeSeries(name, from, to, step, values)
       ts.tags = tags
       return ts
