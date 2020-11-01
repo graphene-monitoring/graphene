@@ -40,7 +40,7 @@ class TransformNullFunction(
       for (i in 0 until length) {
         ts.values[i] = if (ts.values[i] != null) ts.values[i] else transform
       }
-      ts.name = "transformNull(" + ts.name + "," + (if (DoubleMath.isMathematicalInteger(transform)) Integer.toString(transform.toInt()) else transform) + ")"
+      ts.name = "transformNull(${ts.name}," + (if (DoubleMath.isMathematicalInteger(transform)) transform.toInt().toString() else transform) + ")"
     }
   }
 
@@ -62,9 +62,9 @@ class TransformNullFunction(
 
   @Throws(InvalidArgumentException::class)
   override fun checkArguments() {
-    if (arguments.size < 1 || arguments.size > 2) throw InvalidArgumentException("transformNull: number of arguments is " + arguments.size + ". Must be one or two.")
-    if (arguments[0] !is Target) throw InvalidArgumentException("transformNull: argument is " + arguments[0].javaClass.name + ". Must be series")
+    if (arguments.size < 1 || arguments.size > 2) throw InvalidArgumentException("transformNull: number of arguments is ${arguments.size}. Must be one or two.")
+    if (arguments[0] !is Target) throw InvalidArgumentException("transformNull: argument is ${arguments[0].javaClass.name}. Must be series.")
 
-    if (arguments.size > 1 && (arguments[1] !is Double && "recent" != arguments[1])) throw InvalidArgumentException("transformNull: argument is " + arguments[1].javaClass.name + ". Must be a number")
+    if (arguments.size > 1 && (arguments[1] !is Double && "recent" != arguments[1])) throw InvalidArgumentException("transformNull: argument is ${arguments[1].javaClass.name}. Must be a number.")
   }
 }
