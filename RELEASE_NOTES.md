@@ -1,5 +1,5 @@
 # 1.10.0
-- Add recent argument parameter for transformNullFunction [75](https://github.com/graphene-monitoring/graphene/pull/75)
+- Add recent argument parameter for transformNullFunction [#75](https://github.com/graphene-monitoring/graphene/pull/75)
 
 # 1.9.1
 
