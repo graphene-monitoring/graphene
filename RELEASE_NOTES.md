@@ -1,3 +1,6 @@
+# 1.10.0
+- Add recent argument parameter for transformNullFunction [75](https://github.com/graphene-monitoring/graphene/pull/75)
+
 # 1.9.1
 
 ## Feature
@@ -7,52 +10,52 @@
 # 1.9.0
 
 ## Feature
-- support Prometheus Lexer. [#62](https://github.com/graphene-monitoring/graphene/pull/62)
+- Support Prometheus Lexer. [#62](https://github.com/graphene-monitoring/graphene/pull/62)
 - Support basic auth for Elasticsearch client [#64](https://github.com/graphene-monitoring/graphene/pull/64)
 - Drop metric if metric id is greater than 512 bytes. It is es key hard limit. [#64](https://github.com/graphene-monitoring/graphene/pull/67)
 
 ## Improvement
-- improve local key cache [#60](https://github.com/graphene-monitoring/graphene/pull/60)
-- include all option on tag value whenever result set is not empty [#59](https://github.com/graphene-monitoring/graphene/pull/59)
-- configurable resolution(rollup) [#63](https://github.com/graphene-monitoring/graphene/pull/63)
+- Improve local key cache [#60](https://github.com/graphene-monitoring/graphene/pull/60)
+- Include all option on tag value whenever result set is not empty [#59](https://github.com/graphene-monitoring/graphene/pull/59)
+- Configurable resolution(rollup) [#63](https://github.com/graphene-monitoring/graphene/pull/63)
 
 # 1.8.0
 
 ## Feature
-- read and write metrics from Cassandra by following offset based scheme [#44](https://github.com/graphene-monitoring/graphene/issues/44)
+- Read and write metrics from Cassandra by following offset based scheme [#44](https://github.com/graphene-monitoring/graphene/issues/44)
 
 # 1.7.1
 
 ## Feature
-- should deserialize converted metric if label value has whitespace [#54](https://github.com/graphene-monitoring/graphene/pull/54)
+- Should deserialize converted metric if label value has whitespace [#54](https://github.com/graphene-monitoring/graphene/pull/54)
 
 # 1.7.0
 
 ## Feature
-- add input kafka type with graphite deserializer [#43](https://github.com/graphene-monitoring/graphene/pull/43)
-- search Graphene metrics by tags [#38](https://github.com/graphene-monitoring/graphene/pull/38)
-- add prometheus deserializer in kafka input. [#48](https://github.com/graphene-monitoring/graphene/pull/48)
+- Add input kafka type with graphite deserializer [#43](https://github.com/graphene-monitoring/graphene/pull/43)
+- Search Graphene metrics by tags [#38](https://github.com/graphene-monitoring/graphene/pull/38)
+- Add prometheus deserializer in kafka input. [#48](https://github.com/graphene-monitoring/graphene/pull/48)
 
 ## Improvement
-- extract elasticsearch port and protocol to property [#42](https://github.com/graphene-monitoring/graphene/pull/42) Contributed by @jacek-bakowski
-- use index property each handler type [#51](https://github.com/graphene-monitoring/graphene/pull/51)
+- Extract elasticsearch port and protocol to property [#42](https://github.com/graphene-monitoring/graphene/pull/42) Contributed by @jacek-bakowski
+- Use index property each handler type [#51](https://github.com/graphene-monitoring/graphene/pull/51)
 
 ## Bug fix
-- increase graphene cassandra handler max queue size [#40](https://github.com/graphene-monitoring/graphene/pull/40)
-- fix several bugs [#46](https://github.com/graphene-monitoring/graphene/pull/46)
-- fix prometheus deserializer edge case [#51](https://github.com/graphene-monitoring/graphene/pull/51)
+- Increase graphene cassandra handler max queue size [#40](https://github.com/graphene-monitoring/graphene/pull/40)
+- Fix several bugs [#46](https://github.com/graphene-monitoring/graphene/pull/46)
+- Fix prometheus deserializer edge case [#51](https://github.com/graphene-monitoring/graphene/pull/51)
 
 # 1.6.0
 
 ## Feature
-- add InfluxDB write api support [#35](https://github.com/graphene-monitoring/graphene/pull/35)
-- forward to another graphene server for zero downtime upgrade [#36](https://github.com/graphene-monitoring/graphene/pull/36)
+- Add InfluxDB write api support [#35](https://github.com/graphene-monitoring/graphene/pull/35)
+- Forward to another graphene server for zero downtime upgrade [#36](https://github.com/graphene-monitoring/graphene/pull/36)
 
 ## Improvement
-- add Errors enum for handling exception more easily [#37](https://github.com/graphene-monitoring/graphene/pull/37)
+- Add Errors enum for handling exception more easily [#37](https://github.com/graphene-monitoring/graphene/pull/37)
 
 ## Bug fix
-- fix rotated index with leading zero [#34](https://github.com/graphene-monitoring/graphene/pull/34)
+- Fix rotated index with leading zero [#34](https://github.com/graphene-monitoring/graphene/pull/34)
 
 # 1.5.0
 
@@ -62,27 +65,27 @@
 # 1.4.0
 
 ## Feature
-- add KeyCache interface for checking duplication metric key [#25](https://github.com/graphene-monitoring/graphene/pull/25)
-- add helm charts for support easy installation on k8s [#28](https://github.com/graphene-monitoring/graphene/pull/28) Contributed by @hwanjin-jeong
-- add nginx docker image for graphene reader's proxy [#27](https://github.com/graphene-monitoring/graphene/pull/27)
-- add dynamic template to store each key's parts in keyword type [#30](https://github.com/graphene-monitoring/graphene/pull/30)
+- Add KeyCache interface for checking duplication metric key [#25](https://github.com/graphene-monitoring/graphene/pull/25)
+- Add helm charts for support easy installation on k8s [#28](https://github.com/graphene-monitoring/graphene/pull/28) Contributed by @hwanjin-jeong
+- Add nginx docker image for graphene reader's proxy [#27](https://github.com/graphene-monitoring/graphene/pull/27)
+- Add dynamic template to store each key's parts in keyword type [#30](https://github.com/graphene-monitoring/graphene/pull/30)
 
 ## Improvement
-- add bulkAsync feature for indexing performance [#20](https://github.com/graphene-monitoring/graphene/pull/20)
-- change package name to com.graphene [#31](https://github.com/graphene-monitoring/graphene/pull/31)
-- bump up dependency version [#29](https://github.com/graphene-monitoring/graphene/pull/29)
+- Add bulkAsync feature for indexing performance [#20](https://github.com/graphene-monitoring/graphene/pull/20)
+- Change package name to com.graphene [#31](https://github.com/graphene-monitoring/graphene/pull/31)
+- Bump up dependency version [#29](https://github.com/graphene-monitoring/graphene/pull/29)
 
 ## Bug fix
-- ignore unavailable index when read. [#21](https://github.com/graphene-monitoring/graphene/pull/21)
-- improve Key Store throughput [#23](https://github.com/graphene-monitoring/graphene/pull/23)
-- prevent calling clearScroll if there's no scrollId. [#24](https://github.com/graphene-monitoring/graphene/pull/24)
-- fixed some bugs and removed unnecessary codes and operations. [#26](https://github.com/graphene-monitoring/graphene/pull/26)
+- Ignore unavailable index when read. [#21](https://github.com/graphene-monitoring/graphene/pull/21)
+- Improve Key Store throughput [#23](https://github.com/graphene-monitoring/graphene/pull/23)
+- Prevent calling clearScroll if there's no scrollId. [#24](https://github.com/graphene-monitoring/graphene/pull/24)
+- Fixed some bugs and removed unnecessary codes and operations. [#26](https://github.com/graphene-monitoring/graphene/pull/26)
 
 # 1.3.0
 
 ## Feature
-- support past metric indexing based on metric timestamp. [#18](https://github.com/graphene-monitoring/graphene/pull/18)
-- full support for MapSeries, ReduceSeries functions. [#19](https://github.com/graphene-monitoring/graphene/pull/19)
+- Support past metric indexing based on metric timestamp. [#18](https://github.com/graphene-monitoring/graphene/pull/18)
+- Full support for MapSeries, ReduceSeries functions. [#19](https://github.com/graphene-monitoring/graphene/pull/19)
 
 ## Bug fix
 - Index is not determined by metric's timestamp when writing. [#17](https://github.com/graphene-monitoring/graphene/issues/17)
