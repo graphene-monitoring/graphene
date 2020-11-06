@@ -1,4 +1,4 @@
-![Graphene](docs/logo/GrapheneSignature.png)  
+![Graphene](docs/logo/GrapheneSignature.png)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)  [![CircleCI](https://circleci.com/gh/graphene-monitoring/graphene.svg?style=svg)](https://circleci.com/gh/graphene-monitoring/graphene)   [![Join the chat at https://gitter.im/graphene-community/community](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/graphene-community/community)
 
 ## What is Graphene?
@@ -18,6 +18,22 @@ metrics can be maintained and managed in isolated clusters.
 ## Architecture Overview
 
 ![Graphene](docs/main/GrapheneArchitecture.png)
+
+## Function
+
+### [transformNull](https://graphite.readthedocs.io/en/latest/functions.html#graphite.render.functions.transformNull)
+
+Origin:
+```
+&target=transformNull(webapp.pages.*.views,0)
+&target=transformNull(webapp.pages.*.views,-1)
+```
+
+New:
+The most recent value can be used through 'recent' argument.
+```
+&target=transformNull(webapp.pages.*.views,'recent')
+```
 
 ## API Support
 
