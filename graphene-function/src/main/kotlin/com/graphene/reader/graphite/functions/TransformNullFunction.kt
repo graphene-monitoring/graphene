@@ -61,9 +61,9 @@ class TransformNullFunction(
 
   @Throws(InvalidArgumentException::class)
   override fun checkArguments() {
-    if (arguments.size < 1 || arguments.size > 2) throw InvalidArgumentException("transformNull: number of arguments is " + arguments.size + ". Must be one or two.")
-    if (arguments[0] !is Target) throw InvalidArgumentException("transformNull: argument is " + arguments[0].javaClass.name + ". Must be series")
+    if (arguments.size < 1 || arguments.size > 2) throw InvalidArgumentException("transformNull: number of arguments is ${arguments.size}. Must be one or two.")
+    if (arguments[0] !is Target) throw InvalidArgumentException("transformNull: argument is ${arguments[0].javaClass.name}. Must be series.")
 
-    if (arguments.size > 1 && (arguments[1] !is Double && "recent" != arguments[1])) throw InvalidArgumentException("transformNull: argument is " + arguments[1].javaClass.name + ". Must be a number")
+    if (arguments.size > 1 && (arguments[1] !is Double && "recent" != arguments[1])) throw InvalidArgumentException("transformNull: argument is ${arguments[1].javaClass.name}. Must be a number.")
   }
 }
