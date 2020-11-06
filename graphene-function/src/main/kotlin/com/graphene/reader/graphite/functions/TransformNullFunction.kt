@@ -1,6 +1,5 @@
 package com.graphene.reader.graphite.functions
 
-import com.google.common.math.DoubleMath
 import com.graphene.reader.beans.TimeSeries
 import com.graphene.reader.exceptions.InvalidArgumentException
 import com.graphene.reader.exceptions.TimeSeriesNotAlignedException
@@ -33,18 +32,18 @@ class TransformNullFunction(
     return processedArguments
   }
 
-  private fun transformNullUsingNumericValue(transform: Double, processedArguments: MutableList<TimeSeries>) {
+  private fun transformNullUsingNumericValue(transformNumericArgument: Double, processedArguments: MutableList<TimeSeries>) {
     val length = processedArguments[0].values.size
 
     for (ts in processedArguments) {
       for (i in 0 until length) {
-        ts.values[i] = if (ts.values[i] != null) ts.values[i] else transform
+        ts.values[i] = if (ts.values[i] != null) ts.values[i] else transformNumericArgument
       }
-      ts.name = "transformNull(" + ts.name + "," + (if (DoubleMath.isMathematicalInteger(transform)) Integer.toString(transform.toInt()) else transform) + ")"
+      ts.name = "transformNull(${ts.name},$transformNumericArgument)"
     }
   }
 
-  private fun transformNullUsingRecentValue(transform: String, processedArguments: MutableList<TimeSeries>) {
+  private fun transformNullUsingRecentValue(transformRecentArgument: String, processedArguments: MutableList<TimeSeries>) {
     val length = processedArguments[0].values.size
 
     for (ts in processedArguments) {
@@ -56,7 +55,7 @@ class TransformNullFunction(
           ts.values[i] = recentValue
         }
       }
-      ts.name = "transformNull(${ts.name},$transform)"
+      ts.name = "transformNull(${ts.name},$transformRecentArgument)"
     }
   }
 
