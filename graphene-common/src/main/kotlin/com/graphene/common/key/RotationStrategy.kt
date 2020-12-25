@@ -4,6 +4,7 @@ import com.graphene.common.rule.GrapheneRules
 import java.lang.RuntimeException
 import java.time.format.DateTimeFormatter
 import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 import org.threeten.extra.YearWeek
 
@@ -40,7 +41,7 @@ class TimeBasedRotationStrategy(
   rotationProperty: RotationProperty
 ) : RotationStrategy {
   override fun getIndexWithCurrentDate(index: String, tenant: String): String {
-    val dateTime = DateTime()
+    val dateTime = getOrCurrentDateTime()
 
     return when (timeUnit) {
       DAY -> GrapheneRules.index(index, tenant, timePattern.print(dateTime))
@@ -49,7 +50,7 @@ class TimeBasedRotationStrategy(
   }
 
   override fun getIndexWithDate(index: String, tenant: String, timestampMillis: Long): String {
-    val dateTime = DateTime(timestampMillis)
+    val dateTime = getOrCurrentDateTime(timestampMillis)
 
     return when (timeUnit) {
       DAY -> GrapheneRules.index(index, tenant, timePattern.print(dateTime))
@@ -58,38 +59,58 @@ class TimeBasedRotationStrategy(
   }
 
   override fun getRangeIndex(index: String, tenant: String, from: Long, to: Long): Set<String> {
-    val fromDateTime = DateTime(from)
-    val toDateTime = DateTime(to)
+    val fromDateTime = getOrCurrentDateTime(from)
+    val toDateTime = getOrCurrentDateTime(to)
 
-    val indexes = mutableSetOf("${index}_${tenant}_${fromDateTime.weekyear}-w${withLeadingZero(fromDateTime.weekOfWeekyear)}", "${index}_${tenant}_${toDateTime.weekyear}-w${withLeadingZero(toDateTime.weekOfWeekyear)}")
-    if (fromDateTime.weekyear == toDateTime.weekyear) {
-      for (week in fromDateTime.weekOfWeekyear..toDateTime.weekOfWeekyear) {
-        indexes.add("${index}_${tenant}_${fromDateTime.weekyear}-w${withLeadingZero(week)}")
+    return when (timeUnit) {
+      DAY -> {
+        var tmpFrom = from
+        val indexes = mutableSetOf("${index}_${tenant}_${timePattern.print(fromDateTime)}", "${index}_${tenant}_${timePattern.print(toDateTime)}")
+        while (tmpFrom < to) {
+          indexes.add("${index}_${tenant}_${timePattern.print(getOrCurrentDateTime(tmpFrom))}")
+          tmpFrom += DAY_IN_MILLIS
+        }
+        optimizeIndexes(indexes)
       }
-    } else {
-      for (year in fromDateTime.weekyear..toDateTime.weekyear) {
+      else -> {
+        val indexes = mutableSetOf("${index}_${tenant}_${fromDateTime.weekyear}-w${withLeadingZero(fromDateTime.weekOfWeekyear)}", "${index}_${tenant}_${toDateTime.weekyear}-w${withLeadingZero(toDateTime.weekOfWeekyear)}")
+        if (fromDateTime.weekyear == toDateTime.weekyear) {
+          for (week in fromDateTime.weekOfWeekyear..toDateTime.weekOfWeekyear) {
+            indexes.add("${index}_${tenant}_${fromDateTime.weekyear}-w${withLeadingZero(week)}")
+          }
+        } else {
+          for (year in fromDateTime.weekyear..toDateTime.weekyear) {
 
-        if (year > fromDateTime.weekyear && year < toDateTime.weekyear) {
-          for (week in 1..52) {
-            indexes.add("${index}_${tenant}_$year-w${withLeadingZero(week)}")
+            if (year > fromDateTime.weekyear && year < toDateTime.weekyear) {
+              for (week in 1..52) {
+                indexes.add("${index}_${tenant}_$year-w${withLeadingZero(week)}")
+              }
+            }
+
+            if (year == fromDateTime.weekyear) {
+              for (week in fromDateTime.weekOfWeekyear..52) {
+                indexes.add("${index}_${tenant}_$year-w${withLeadingZero(week)}")
+              }
+            }
+
+            if (year == toDateTime.weekyear) {
+              for (week in 1..toDateTime.weekOfWeekyear) {
+                indexes.add("${index}_${tenant}_$year-w${withLeadingZero(week)}")
+              }
+            }
           }
         }
-
-        if (year == fromDateTime.weekyear) {
-          for (week in fromDateTime.weekOfWeekyear..52) {
-            indexes.add("${index}_${tenant}_$year-w${withLeadingZero(week)}")
-          }
-        }
-
-        if (year == toDateTime.weekyear) {
-          for (week in 1..toDateTime.weekOfWeekyear) {
-            indexes.add("${index}_${tenant}_$year-w${withLeadingZero(week)}")
-          }
-        }
+        indexes
       }
     }
+  }
 
+  private fun optimizeIndexes(indexes: MutableSet<String>): MutableSet<String> {
     return indexes
+  }
+
+  private fun getOrCurrentDateTime(timestampMillis: Long? = null): DateTime {
+    return timestampMillis?.let { DateTime(it, TIME_ZONE) } ?: DateTime(TIME_ZONE)
   }
 
   private fun withLeadingZero(week: Int): String {
@@ -105,8 +126,9 @@ class TimeBasedRotationStrategy(
 
   companion object {
     const val DATE_FORMAT = "yyyyMMdd"
-
     const val DAY = 'd'
+    const val DAY_IN_MILLIS = 24 * 60 * 60 * 1000
+    val TIME_ZONE: DateTimeZone = DateTimeZone.UTC
   }
 }
 

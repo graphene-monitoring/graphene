@@ -7,6 +7,7 @@ import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
 import io.kotlintest.tables.table
 import java.text.SimpleDateFormat
+import java.util.TimeZone
 import kotlin.test.assertEquals
 import org.joda.time.DateTimeUtils
 import org.junit.jupiter.api.Test
@@ -81,6 +82,23 @@ internal class TimeBasedRotationStrategyTest {
   }
 
   @Test
+  internal fun `should calculate days between from and until when year is different`() {
+    table(
+      headers("from", "to", "expectedIndexes"),
+      row("2019-12-30 10:00:00", "2020-01-02 11:00:00", setOf("index_tenant_20191230", "index_tenant_20191231", "index_tenant_20200101", "index_tenant_20200102"))
+    ).forAll { from, to, expectedIndexes ->
+      // given
+      val timeBasedRotationStrategy = TimeBasedRotationStrategy(RotationProperty(period = "1d"))
+
+      // when
+      val indexes = timeBasedRotationStrategy.getRangeIndex("index", "tenant", com.graphene.common.utils.DateTimeUtils.from(from), com.graphene.common.utils.DateTimeUtils.from(to))
+
+      // then
+      assertEquals(expectedIndexes, indexes)
+    }
+  }
+
+  @Test
   internal fun `should calculate weeks between from and until when year is different`() {
     table(
       headers("from", "to", "expectedIndexes"),
@@ -143,7 +161,9 @@ internal class TimeBasedRotationStrategyTest {
   }
 
   private fun setCurrentMillisFixed(date: String) {
-    val currentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date).time
+    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    val currentTime = simpleDateFormat.parse(date).time
     DateTimeUtils.setCurrentMillisFixed(currentTime)
   }
 }
