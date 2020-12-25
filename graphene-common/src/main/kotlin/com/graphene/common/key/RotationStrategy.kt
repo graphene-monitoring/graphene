@@ -3,7 +3,6 @@ package com.graphene.common.key
 import com.graphene.common.rule.GrapheneRules
 import java.lang.RuntimeException
 import java.time.format.DateTimeFormatter
-import java.util.Objects
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
@@ -42,7 +41,7 @@ class TimeBasedRotationStrategy(
   rotationProperty: RotationProperty
 ) : RotationStrategy {
   override fun getIndexWithCurrentDate(index: String, tenant: String): String {
-    val dateTime = getDateTime(null)
+    val dateTime = getOrCurrentDateTime()
 
     return when (timeUnit) {
       DAY -> GrapheneRules.index(index, tenant, timePattern.print(dateTime))
@@ -51,7 +50,7 @@ class TimeBasedRotationStrategy(
   }
 
   override fun getIndexWithDate(index: String, tenant: String, timestampMillis: Long): String {
-    val dateTime = getDateTime(timestampMillis)
+    val dateTime = getOrCurrentDateTime(timestampMillis)
 
     return when (timeUnit) {
       DAY -> GrapheneRules.index(index, tenant, timePattern.print(dateTime))
@@ -60,15 +59,15 @@ class TimeBasedRotationStrategy(
   }
 
   override fun getRangeIndex(index: String, tenant: String, from: Long, to: Long): Set<String> {
-    val fromDateTime = getDateTime(from)
-    val toDateTime = getDateTime(to)
+    val fromDateTime = getOrCurrentDateTime(from)
+    val toDateTime = getOrCurrentDateTime(to)
 
     return when (timeUnit) {
       DAY -> {
         var tmpFrom = from
         val indexes = mutableSetOf("${index}_${tenant}_${timePattern.print(fromDateTime)}", "${index}_${tenant}_${timePattern.print(toDateTime)}")
         while (tmpFrom < to) {
-          indexes.add("${index}_${tenant}_${timePattern.print(getDateTime(tmpFrom))}")
+          indexes.add("${index}_${tenant}_${timePattern.print(getOrCurrentDateTime(tmpFrom))}")
           tmpFrom += DAY_IN_MILLIS
         }
         optimizeIndexes(indexes)
@@ -110,12 +109,8 @@ class TimeBasedRotationStrategy(
     return indexes
   }
 
-  private fun getOrCurrentDateTime(timestampMillis: Long? = null) {
-    return if (Objects.isNull(timestampMillis)) {
-      DateTime(TIME_ZONE)
-    } else {
-      DateTime(timestampMillis, TIME_ZONE)
-    }
+  private fun getOrCurrentDateTime(timestampMillis: Long? = null): DateTime {
+    return timestampMillis?.let { DateTime(it, TIME_ZONE) } ?: DateTime(TIME_ZONE)
   }
 
   private fun withLeadingZero(week: Int): String {

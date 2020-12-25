@@ -29,6 +29,7 @@ object GrapheneRules {
   object Key {
     const val DEFAULT_TYPE = "path"
     const val ROTATION_NONE = "0"
+    const val ROTATION_1D = "1d"
     const val ROTATION_1W = "1w"
 
     fun extractWeekFrom(weeklyDate: String): Int {
