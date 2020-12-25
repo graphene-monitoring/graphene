@@ -110,7 +110,7 @@ class TimeBasedRotationStrategy(
     return indexes
   }
 
-  private fun getDateTime(timestampMillis: Long?): DateTime {
+  private fun getOrCurrentDateTime(timestampMillis: Long? = null) {
     return if (Objects.isNull(timestampMillis)) {
       DateTime(TIME_ZONE)
     } else {
