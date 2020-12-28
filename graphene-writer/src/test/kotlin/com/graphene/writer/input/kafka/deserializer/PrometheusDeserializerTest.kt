@@ -22,7 +22,7 @@ internal class PrometheusDeserializerTest {
     // then
     grapheneMetric shouldNotBe null
 
-    grapheneMetric[0].id shouldBe "http_requests_total;method=post;code=200"
+    grapheneMetric[0].key shouldBe "http_requests_total;method=post;code=200"
     grapheneMetric[0].tags shouldContainAll mapOf(Pair("method", "post"), Pair("code", "200"))
     grapheneMetric[0].value shouldBe 1027.0
     grapheneMetric[0].source shouldBe Source.PROMETHEUS
@@ -42,7 +42,7 @@ internal class PrometheusDeserializerTest {
 
     grapheneMetric shouldNotBe null
 
-    grapheneMetric[0].id shouldBe "http_requests_total;method=post;code=200"
+    grapheneMetric[0].key shouldBe "http_requests_total;method=post;code=200"
     grapheneMetric[0].tags shouldContainAll mapOf(Pair("method", "post"), Pair("code", "200"))
     grapheneMetric[0].value shouldBe 1027.0
     grapheneMetric[0].source shouldBe Source.PROMETHEUS
@@ -55,13 +55,13 @@ internal class PrometheusDeserializerTest {
 
     grapheneMetric shouldNotBe null
 
-    grapheneMetric[0].id shouldBe "swap_in;host=local"
+    grapheneMetric[0].key shouldBe "swap_in;host=local"
     grapheneMetric[0].tags shouldContainAll mapOf(Pair("host", "local"))
     grapheneMetric[0].value shouldBe 0.0
     grapheneMetric[0].source shouldBe Source.PROMETHEUS
     grapheneMetric[0].timestampMillis() shouldBe 1580532000000
 
-    grapheneMetric[1].id shouldBe "swap_out;host=local"
+    grapheneMetric[1].key shouldBe "swap_out;host=local"
     grapheneMetric[1].tags shouldContainAll mapOf(Pair("host", "local"))
     grapheneMetric[1].value shouldBe 0.0
     grapheneMetric[1].source shouldBe Source.PROMETHEUS
@@ -74,13 +74,13 @@ internal class PrometheusDeserializerTest {
 
     grapheneMetric shouldNotBe null
 
-    grapheneMetric[0].id shouldBe "swap_in;host=local"
+    grapheneMetric[0].key shouldBe "swap_in;host=local"
     grapheneMetric[0].tags shouldContainAll mapOf(Pair("host", "local"))
     grapheneMetric[0].value shouldBe 0.0
     grapheneMetric[0].source shouldBe Source.PROMETHEUS
     grapheneMetric[0].timestampMillis() shouldBe 1580532000000
 
-    grapheneMetric[1].id shouldBe "swap_out;host=local"
+    grapheneMetric[1].key shouldBe "swap_out;host=local"
     grapheneMetric[1].tags shouldContainAll mapOf(Pair("host", "local"))
     grapheneMetric[1].value shouldBe 0.0
     grapheneMetric[1].source shouldBe Source.PROMETHEUS
@@ -93,13 +93,13 @@ internal class PrometheusDeserializerTest {
 
     grapheneMetric shouldNotBe null
 
-    grapheneMetric[0].id shouldBe "jvm_gc_CollectionCount;host=localhost;name=G1_Old_Generation"
+    grapheneMetric[0].key shouldBe "jvm_gc_CollectionCount;host=localhost;name=G1_Old_Generation"
     grapheneMetric[0].tags shouldContainAll mapOf(Pair("host", "localhost"), Pair("name", "G1_Old_Generation"))
     grapheneMetric[0].value shouldBe 0.0
     grapheneMetric[0].source shouldBe Source.PROMETHEUS
     grapheneMetric[0].timestampMillis() shouldBe 1580532000000
 
-    grapheneMetric[1].id shouldBe "jvm_gc_CollectionCount;host=localhost;name=G1_Young_Generation"
+    grapheneMetric[1].key shouldBe "jvm_gc_CollectionCount;host=localhost;name=G1_Young_Generation"
     grapheneMetric[1].tags shouldContainAll mapOf(Pair("host", "localhost"), Pair("name", "G1_Young_Generation"))
     grapheneMetric[1].value shouldBe 14937.0
     grapheneMetric[1].source shouldBe Source.PROMETHEUS

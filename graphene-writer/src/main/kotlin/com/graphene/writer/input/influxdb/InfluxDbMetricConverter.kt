@@ -1,5 +1,6 @@
 package com.graphene.writer.input.influxdb
 
+import com.graphene.common.utils.HashUtils.sha512
 import com.graphene.writer.input.GrapheneMetric
 import com.graphene.writer.input.MetricConverter
 import com.graphene.writer.input.NotFinishedConvertException
@@ -73,14 +74,15 @@ class InfluxDbMetricConverter : MetricConverter<String> {
           }
           ConvertStage.FIELD_VALUE -> {
             if (char == ',') {
-              var id = key(meta, tmpKey)
+              var key = key(meta, tmpKey)
 
               for (tag in tags) {
-                id += withAndOperator(tag, tags)
+                key += withAndOperator(tag, tags)
               }
               grapheneMetrics.add(GrapheneMetric(
                 source = Source.INFLUXDB,
-                id = id,
+                id = key.sha512(),
+                key = key,
                 meta = meta,
                 tags = tags,
                 nodes = TreeMap(),
@@ -92,14 +94,15 @@ class InfluxDbMetricConverter : MetricConverter<String> {
             }
 
             if (char == ' ') {
-              var id = key(meta, tmpKey)
+              var key = key(meta, tmpKey)
 
               for (tag in tags) {
-                id += withAndOperator(tag, tags)
+                key += withAndOperator(tag, tags)
               }
               grapheneMetrics.add(GrapheneMetric(
                 source = Source.INFLUXDB,
-                id = id,
+                id = key.sha512(),
+                key = key,
                 meta = meta,
                 tags = tags,
                 nodes = TreeMap(),

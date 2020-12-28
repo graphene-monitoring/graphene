@@ -45,8 +45,8 @@ internal class InfluxDbMetricConverterTest {
     grapheneMetric.meta["@measurement"] shouldBe "disk"
 
     // id
-    grapheneMetric.id shouldBe "disk_used;device=disk1s4&fstype=apfs&host=server1&mode=rw&path=/private/var/vm"
-    grapheneMetric.metricKey() shouldBe "disk_used"
+    grapheneMetric.key shouldBe "disk_used;device=disk1s4&fstype=apfs&host=server1&mode=rw&path=/private/var/vm"
+    grapheneMetric.metricName() shouldBe "disk_used"
 
     // tag
     grapheneMetric.tags shouldBe mapOf(
@@ -68,8 +68,8 @@ internal class InfluxDbMetricConverterTest {
     grapheneMetric.meta["@measurement"] shouldBe "disk"
 
     // id
-    grapheneMetric.id shouldBe "disk_used_percent;device=disk1s4&fstype=apfs&host=server1&mode=rw&path=/private/var/vm"
-    grapheneMetric.metricKey() shouldBe "disk_used_percent"
+    grapheneMetric.key shouldBe "disk_used_percent;device=disk1s4&fstype=apfs&host=server1&mode=rw&path=/private/var/vm"
+    grapheneMetric.metricName() shouldBe "disk_used_percent"
 
     // tag
     grapheneMetric.tags shouldBe mapOf(
@@ -86,8 +86,8 @@ internal class InfluxDbMetricConverterTest {
     grapheneMetric = grapheneMetrics[2]
 
     // id
-    grapheneMetric.id shouldBe "disk_free;device=disk1s4&fstype=apfs&host=server1&mode=rw&path=/private/var/vm"
-    grapheneMetric.metricKey() shouldBe "disk_free"
+    grapheneMetric.key shouldBe "disk_free;device=disk1s4&fstype=apfs&host=server1&mode=rw&path=/private/var/vm"
+    grapheneMetric.metricName() shouldBe "disk_free"
     grapheneMetric.value shouldBe 149994110976.0
 
     // timestamp

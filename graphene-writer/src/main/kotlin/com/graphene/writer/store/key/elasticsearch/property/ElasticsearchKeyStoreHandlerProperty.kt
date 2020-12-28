@@ -17,7 +17,11 @@ class ElasticsearchKeyStoreHandlerProperty(
   var userName: String? = "",
   var userPassword: String? = "",
   var protocol: String = "http",
-  var bulk: IndexBulkConfiguration = IndexBulkConfiguration()
+  var bulk: IndexBulkConfiguration = IndexBulkConfiguration(),
+  var initialSchedulerDelay: Long = 5_000L,
+  var schedulerDelay: Long = 10_000L,
+  var cacheExpireIntervalInSeconds: Long = 300L,
+  var targetProcessTime: Long = 30_000L
 ) {
 
   @PostConstruct

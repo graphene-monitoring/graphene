@@ -13,6 +13,7 @@ import java.util.TreeMap
 data class GrapheneMetric(
   val source: Source,
   val id: String,
+  val key: String,
   val meta: MutableMap<String, String>,
   var tags: TreeMap<String, String>,
   var nodes: TreeMap<String, String>,
@@ -20,8 +21,12 @@ data class GrapheneMetric(
   var timestampSeconds: Long
 ) {
 
+  fun metricName(): String {
+    return key.split(";")[0]
+  }
+
   fun metricKey(): String {
-    return id.split(";")[0]
+    return key
   }
 
   fun getTenant(): String {

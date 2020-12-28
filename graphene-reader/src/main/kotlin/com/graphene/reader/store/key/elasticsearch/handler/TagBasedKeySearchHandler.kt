@@ -40,11 +40,16 @@ class TagBasedKeySearchHandler(
 
       while (response.hits.hits.isNotEmpty()) {
         for (hit in response.hits) {
-          val path = Path(hit.id)
+          val sources = hit.sourceAsMap as Map<String, *>
+          if (! sources.containsKey(KEY)) {
+            continue
+          }
+          val path = Path(sources[KEY].toString())
           if (Objects.nonNull(hit.sourceAsMap)) {
-            val tags = (hit.sourceAsMap as Map<String, *>)
-            for (tag in tags) {
-              path.addTag(tag.key, tag.value.toString())
+            for (source in sources) {
+              if (! INTERNAL_KEYS.contains(source.key)) {
+                path.addTag(source.key, source.value.toString())
+              }
             }
           }
           result.add(path)
@@ -65,5 +70,12 @@ class TagBasedKeySearchHandler(
   override fun getHierarchyMetricPaths(tenant: String, pathExpression: String, from: Long, to: Long): MutableCollection<HierarchyMetricPaths.HierarchyMetricPath> {
     log.info("Hierarchical search is not supported on TagBasedKeySearchHandler.")
     return mutableListOf()
+  }
+
+  companion object {
+    const val KEY = "@key"
+    const val NAME = "@name"
+    const val TAGS = "@tags"
+    val INTERNAL_KEYS = setOf(KEY, NAME, TAGS)
   }
 }

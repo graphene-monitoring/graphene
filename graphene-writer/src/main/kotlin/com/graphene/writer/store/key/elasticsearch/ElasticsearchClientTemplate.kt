@@ -10,8 +10,6 @@ import org.apache.http.impl.nio.reactor.IOReactorConfig
 import org.apache.logging.log4j.LogManager
 import org.elasticsearch.action.ActionListener
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest
-import org.elasticsearch.action.admin.indices.get.GetIndexRequest
-import org.elasticsearch.action.admin.indices.get.GetIndexResponse
 import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest
 import org.elasticsearch.action.bulk.BulkRequest
 import org.elasticsearch.action.bulk.BulkResponse
@@ -23,6 +21,8 @@ import org.elasticsearch.client.RequestOptions
 import org.elasticsearch.client.RestClient
 import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.client.indices.CreateIndexRequest
+import org.elasticsearch.client.indices.GetIndexRequest
+import org.elasticsearch.client.indices.GetIndexResponse
 import org.elasticsearch.client.sniff.Sniffer
 import org.elasticsearch.common.xcontent.XContentType
 
@@ -100,7 +100,7 @@ class ElasticsearchClientTemplate(
   }
 
   override fun getIndices(): GetIndexResponse {
-    val request = GetIndexRequest().indices("*")
+    val request = GetIndexRequest("*")
     return restHighLevelClient.indices().get(request, RequestOptions.DEFAULT)
   }
 
@@ -135,14 +135,13 @@ class ElasticsearchClientTemplate(
     )
   }
 
-  override fun createIndexIfNotExists(index: String, tenant: String, from: Long?, to: Long?) {
-    val rangeIndices = getRangeIndex(index, tenant, from!!, to!!)
-    for (rangeIndex in rangeIndices) {
-      if (restHighLevelClient.indices().exists(GetIndexRequest().indices(rangeIndex), RequestOptions.DEFAULT)) {
+  override fun createIndexIfNotExists(indices: Set<String>) {
+    for (index in indices) {
+      if (restHighLevelClient.indices().exists(GetIndexRequest(index), RequestOptions.DEFAULT)) {
         continue
       }
 
-      val createIndexRequest = CreateIndexRequest(rangeIndex)
+      val createIndexRequest = CreateIndexRequest(index)
       restHighLevelClient.indices().create(createIndexRequest, RequestOptions.DEFAULT)
     }
   }

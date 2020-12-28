@@ -23,8 +23,8 @@ class IndexBasedKeyStoreHandler(
     return metric.source == Source.GRAPHITE
   }
 
-  override fun mapToGrapheneIndexRequests(metric: GrapheneMetric?): List<GrapheneIndexRequest> {
-    return mutableListOf(GrapheneIndexRequest(metric!!.id, source(metric), metric.timestampMillis()))
+  override fun mapToGrapheneIndexRequests(metric: GrapheneMetric): List<GrapheneIndexRequest> {
+    return mutableListOf(GrapheneIndexRequest(metric.id, source(metric), metric.timestampMillis()))
   }
 
   override fun templateSource(): String = SOURCE

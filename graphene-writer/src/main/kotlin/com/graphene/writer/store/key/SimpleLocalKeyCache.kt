@@ -15,7 +15,7 @@ class SimpleLocalKeyCache<K>(
   expireInterval: Long
 ) : KeyCache<K> {
   private val internalSimpleCache = CacheBuilder.newBuilder()
-    .expireAfterAccess(expireInterval, TimeUnit.MINUTES)
+    .expireAfterAccess(expireInterval, TimeUnit.SECONDS)
     .build<K, Byte>()
 
   override fun get(key: K): K? {

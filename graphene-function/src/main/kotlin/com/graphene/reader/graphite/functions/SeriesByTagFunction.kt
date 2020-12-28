@@ -35,5 +35,20 @@ class SeriesByTagFunction(text: String?) : GrapheneFunction(text, "seriesByTag")
           getClassName(argString.orElse(null)) + ". Must be a string."
       )
     }
+    for (argument in arguments) {
+      val argString = argument.toString()
+      if (argString.contains("=~")) {
+        val arr = argString.split("=~")
+        check(arr.size == 2 && arr[1].isNotBlank(),
+          "seriesByTag: incomplete arguments. Please check."
+        )
+      }
+      if (argString.contains("=")) {
+        val arr = argString.split("=")
+        check(arr.size == 2 && arr[1].isNotBlank(),
+          "seriesByTag: incomplete arguments. Please check."
+        )
+      }
+    }
   }
 }

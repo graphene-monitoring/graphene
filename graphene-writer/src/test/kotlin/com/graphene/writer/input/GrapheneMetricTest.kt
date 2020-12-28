@@ -1,5 +1,6 @@
 package com.graphene.writer.input
 
+import com.graphene.common.utils.HashUtils.sha512
 import java.util.Collections
 import java.util.TreeMap
 import kotlin.test.assertEquals
@@ -13,6 +14,7 @@ internal class GrapheneMetricTest {
     // given
     val grapheneMetric = GrapheneMetric(
       Source.GRAPHITE,
+      "a.b.c".sha512(),
       "a.b.c",
       Collections.emptyMap(),
       TreeMap(
@@ -28,9 +30,9 @@ internal class GrapheneMetricTest {
     )
 
     // when
-    val id = grapheneMetric.id
+    val key = grapheneMetric.key
 
     // then
-    assertEquals(id, "a.b.c")
+    assertEquals(key, "a.b.c")
   }
 }

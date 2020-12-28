@@ -47,12 +47,12 @@ class GrapheneProcessor(
       return
     }
 
-    val metricIdBytes = grapheneMetric.id.toByteArray()
-    if (METRIC_ID_LIMIT < metricIdBytes.size) {
-      dropCount.incrementAndGet()
-      log.debug("Graphene has a metric key limit of 512 bytes. But it is ${metricIdBytes.size} bytes. Drop the graphene metric : $grapheneMetric.")
-      return
-    }
+//    val metricIdBytes = grapheneMetric.id.toByteArray()
+//    if (METRIC_ID_LIMIT < metricIdBytes.size) {
+//      dropCount.incrementAndGet()
+//      log.debug("Graphene has a metric key limit of 512 bytes. But it is ${metricIdBytes.size} bytes. Drop the graphene metric : $grapheneMetric.")
+//      return
+//    }
 
     for (storeHandler in storeHandlers) {
       storeHandler.handle(grapheneMetric)

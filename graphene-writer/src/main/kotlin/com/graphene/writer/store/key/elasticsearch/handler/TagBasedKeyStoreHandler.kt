@@ -30,8 +30,8 @@ class TagBasedKeyStoreHandler(
     return true
   }
 
-  override fun mapToGrapheneIndexRequests(metric: GrapheneMetric?): List<GrapheneIndexRequest> {
-    if (Source.GRAPHITE == metric!!.source) {
+  override fun mapToGrapheneIndexRequests(metric: GrapheneMetric): List<GrapheneIndexRequest> {
+    if (Source.GRAPHITE == metric.source) {
       log.warn("Please change store handler to simple or index-based key store handler because TagBasedKeyStoreHandler does not support the old graphite format.")
       return Collections.emptyList<GrapheneIndexRequest>()
     }
@@ -53,7 +53,8 @@ class TagBasedKeyStoreHandler(
     }
 
     source.field(TAGS_FIELD, grapheneMetric.tags.keys)
-    source.field(NAME_FIELD, grapheneMetric.metricKey())
+    source.field(NAME_FIELD, grapheneMetric.metricName())
+    source.field(KEY_FIELD, grapheneMetric.metricKey())
 
     return source.endObject()
   }
@@ -62,6 +63,7 @@ class TagBasedKeyStoreHandler(
     const val TEMPLATE_NAME = "tag-based-key-path-template"
     const val TAGS_FIELD = "@tags"
     const val NAME_FIELD = "@name"
+    const val KEY_FIELD = "@key"
     const val SOURCE =
       """
       {
