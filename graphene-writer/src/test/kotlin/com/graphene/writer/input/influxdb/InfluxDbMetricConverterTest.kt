@@ -17,7 +17,7 @@ internal class InfluxDbMetricConverterTest {
 
     // measurement
     grapheneMetric.meta["@measurement"] shouldBe "cpu"
-    grapheneMetric.metricKey() shouldBe "cpu_usage_user"
+    grapheneMetric.metricName() shouldBe "cpu_usage_user"
 
     // tag
     grapheneMetric.tags shouldBe mapOf(Pair("cpu", "cpu1"), Pair("host", "server1"))
@@ -105,7 +105,7 @@ internal class InfluxDbMetricConverterTest {
     // then influx db format to graphene metric
 
     // measurement
-    grapheneMetric.metricKey() shouldBe "cpu_usage_user"
+    grapheneMetric.metricName() shouldBe "cpu_usage_user"
     grapheneMetric.meta["@measurement"] shouldBe "cpu"
 
     // tag
@@ -130,7 +130,7 @@ internal class InfluxDbMetricConverterTest {
 
     // measurement
     grapheneMetric.meta["@measurement"] shouldBe "BrokerTopicMetrics"
-    grapheneMetric.metricKey() shouldBe "BrokerTopicMetrics_ProduceMessageConversionsPerSec_EventType"
+    grapheneMetric.metricName() shouldBe "BrokerTopicMetrics_ProduceMessageConversionsPerSec_EventType"
 
     // tag
     grapheneMetric.tags shouldBe mapOf(Pair("host", "server1"))
@@ -154,7 +154,7 @@ internal class InfluxDbMetricConverterTest {
 
     // measurement
     grapheneMetric.meta["@measurement"] shouldBe "jvm_memoryPool"
-    grapheneMetric.metricKey() shouldBe "jvm_memoryPool_CollectionUsage_committed"
+    grapheneMetric.metricName() shouldBe "jvm_memoryPool_CollectionUsage_committed"
 
     // tag
     grapheneMetric.tags shouldBe mapOf(
