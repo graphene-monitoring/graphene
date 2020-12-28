@@ -23,16 +23,16 @@ class SeriesByTagFunctionTest {
     // given
     val table = table(
       headers("argument"),
-      row(NUMERIC_ARGUMENT)
-//      row(null),
-//      row("tagKey="),
-//      row("tagKey=~"),
-//      row("tagKey!="),
-//      row("tagKey=~"),
-//      row("tagKey!=~"),
-//      row("tagKey tagValue"),
-//      row("tagKey="),
-//      row("=tagValue")
+      row(NUMERIC_ARGUMENT),
+      row(null),
+      row("tagKey="),
+      row("tagKey=~"),
+      row("tagKey!="),
+      row("tagKey=~"),
+      row("tagKey!=~"),
+      row("tagKey tagValue"),
+      row("tagKey="),
+      row("=tagValue")
     )
 
     // when
