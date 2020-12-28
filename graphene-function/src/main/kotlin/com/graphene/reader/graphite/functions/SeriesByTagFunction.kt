@@ -43,10 +43,10 @@ class SeriesByTagFunction(text: String?) : GrapheneFunction(text, "seriesByTag")
   }
 
   private fun SeriesByTagArgument.toTagExpressionPair(): List<String> {
-    return split(getTagExpressionMatcherOrThrow())
+    return split(extractTagExpressionMatcherElseThrow())
   }
 
-  private fun SeriesByTagArgument.getTagExpressionMatcherOrThrow(): String {
+  private fun SeriesByTagArgument.extractTagExpressionMatcherElseThrow(): String {
     return when {
       this.contains("!=~") -> "!=~"
       this.contains("!=") -> "!="
