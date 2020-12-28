@@ -23,13 +23,22 @@ class SeriesByTagFunctionTest {
     // given
     val table = table(
       headers("argument"),
-      row(NUMERIC_ARGUMENT),
-      row(null)
+      row(NUMERIC_ARGUMENT)
+//      row(null),
+//      row("tagKey="),
+//      row("tagKey=~"),
+//      row("tagKey!="),
+//      row("tagKey=~"),
+//      row("tagKey!=~"),
+//      row("tagKey tagValue"),
+//      row("tagKey="),
+//      row("=tagValue")
     )
 
     // when
     table.forAll { argument ->
-      seriesByTagFunction.addArg(argument)
+      val seriesByTagFunction = SeriesByTagFunction(FUNCTION_NAME)
+        .apply { addArg(argument) }
 
       assertThrows<InvalidArgumentException> { seriesByTagFunction.checkArguments() }
     }
