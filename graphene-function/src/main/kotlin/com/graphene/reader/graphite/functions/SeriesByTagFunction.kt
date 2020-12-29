@@ -5,10 +5,12 @@ import com.graphene.reader.beans.TimeSeries
 import com.graphene.reader.exceptions.EvaluationException
 import com.graphene.reader.exceptions.InvalidArgumentException
 import com.graphene.reader.graphite.evaluation.TargetEvaluator
-import java.util.Optional
+
+typealias SeriesByTagArgument = String
 
 /**
  * @author jerome89
+ * @author dark
  */
 class SeriesByTagFunction(text: String?) : GrapheneFunction(text, "seriesByTag") {
   @Throws(EvaluationException::class)
@@ -27,28 +29,34 @@ class SeriesByTagFunction(text: String?) : GrapheneFunction(text, "seriesByTag")
       "seriesByTag: number of arguments is " +
         arguments.size + ". Must be at least one."
     )
-    for (argument in arguments) {
-      val argString: Optional<Any> = Optional.ofNullable(argument)
-      check(
-        argString.orElse(null) is String,
-        "seriesByTag: argument is " +
-          getClassName(argString.orElse(null)) + ". Must be a string."
+
+    for (seriesByTagArgument in arguments) {
+      check(seriesByTagArgument is SeriesByTagArgument,
+        "seriesByTag: argument is ${getClassName(seriesByTagArgument)}. Must be a string argument. Please check $arguments."
+      )
+
+      val (tagKey, tagValue) = (seriesByTagArgument as SeriesByTagArgument).toTagExpressionPair()
+      check(tagKey.isNotNullOrBlank() && tagValue.isNotNullOrBlank(),
+        "seriesByTag: incomplete arguments. Please check $arguments."
       )
     }
-    for (argument in arguments) {
-      val argString = argument.toString()
-      if (argString.contains("=~")) {
-        val arr = argString.split("=~")
-        check(arr.size == 2 && arr[1].isNotBlank(),
-          "seriesByTag: incomplete arguments. Please check."
-        )
-      }
-      if (argString.contains("=")) {
-        val arr = argString.split("=")
-        check(arr.size == 2 && arr[1].isNotBlank(),
-          "seriesByTag: incomplete arguments. Please check."
-        )
-      }
+  }
+
+  private fun SeriesByTagArgument.toTagExpressionPair(): List<String> {
+    return split(extractTagExpressionMatcherElseThrow())
+  }
+
+  private fun SeriesByTagArgument.extractTagExpressionMatcherElseThrow(): String {
+    return when {
+      this.contains("!=~") -> "!=~"
+      this.contains("!=") -> "!="
+      this.contains("=~") -> "=~"
+      this.contains("=") -> "="
+      else -> throw InvalidArgumentException("seriesByTag: incomplete arguments. Please check $this.")
     }
+  }
+
+  private fun String?.isNotNullOrBlank(): Boolean {
+    return !this.isNullOrBlank()
   }
 }
