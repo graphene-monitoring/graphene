@@ -127,7 +127,17 @@ graphene:
         - "testtenant"
         - "graphite_cluster"
 
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
+    threads:
+      max: 500
+
 management:
+  health:
+    elasticsearch:
+      enabled: false
   metrics:
     export:
       graphite:
