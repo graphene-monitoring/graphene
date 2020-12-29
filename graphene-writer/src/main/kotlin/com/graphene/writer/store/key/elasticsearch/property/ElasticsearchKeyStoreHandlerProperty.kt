@@ -6,8 +6,6 @@ import org.slf4j.LoggerFactory
 
 class ElasticsearchKeyStoreHandlerProperty(
   var enabled: Boolean = false,
-  var isCache: Boolean = false,
-  var expire: Long = 0,
   var clusterName: String = "graphene",
   var templateIndexPattern: String = "metric*",
   var index: String = "metric",
@@ -18,8 +16,6 @@ class ElasticsearchKeyStoreHandlerProperty(
   var userPassword: String? = "",
   var protocol: String = "http",
   var bulk: IndexBulkConfiguration = IndexBulkConfiguration(),
-  var initialSchedulerDelay: Long = 5_000L,
-  var schedulerDelay: Long = 10_000L,
   var cacheExpireIntervalInSeconds: Long = 300L,
   var targetProcessTime: Long = 30_000L
 ) {
@@ -30,7 +26,7 @@ class ElasticsearchKeyStoreHandlerProperty(
   }
 
   override fun toString(): String {
-    return "ElasticsearchKeyStoreHandlerProperty(enabled=$enabled, isCache=$isCache, expire=$expire, clusterName='$clusterName', index='$index', type='$type', cluster=$cluster, port=$port, protocol=$protocol, bulk=$bulk)"
+    return "ElasticsearchKeyStoreHandlerProperty(enabled=$enabled, clusterName='$clusterName', index='$index', type='$type', cluster=$cluster, port=$port, protocol=$protocol, bulk=$bulk)"
   }
 
   companion object {

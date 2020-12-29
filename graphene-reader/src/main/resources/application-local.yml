@@ -136,6 +136,3 @@ management:
         port: 2003
         protocol: plaintext
         graphite-tags-enabled: true
-    tags:
-      application: graphene-reader
-      env: local

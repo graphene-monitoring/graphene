@@ -80,13 +80,20 @@ class ElasticsearchIntegratedTagSearchQueryOptimizer : ElasticsearchTagSearchQue
   private fun terms(expr: String): List<String> {
     val result = mutableListOf<String>()
     var termBuilder = StringBuilder()
+    var terms = false
 
     for (c in expr) {
-      if (skip(c)) {
+      if (c == ' ') {
         continue
       }
 
-      if (c == ',' || c == '}') {
+      // this enables us to query keys having comma in tag value
+      if (c == '{') {
+        terms = true
+        continue
+      }
+
+      if (terms && (c == ',' || c == '}')) {
         result.add(termBuilder.toString())
         termBuilder = StringBuilder()
         continue
@@ -112,8 +119,6 @@ class ElasticsearchIntegratedTagSearchQueryOptimizer : ElasticsearchTagSearchQue
   private fun isNegativeQuery(expr: String) = expr.last() == EXCLAMATION
 
   private fun isStartWithTilde(expr: String) = expr.first() == TILDE
-
-  private fun skip(char: Char) = char == '{' || char == ' '
 
   private fun getEscapedExpression(expr: String): String {
     return expr.replace(".", "\\.")

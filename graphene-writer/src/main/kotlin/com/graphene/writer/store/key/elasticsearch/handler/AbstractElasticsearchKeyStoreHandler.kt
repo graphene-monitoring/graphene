@@ -1,6 +1,5 @@
 package com.graphene.writer.store.key.elasticsearch.handler
 
-import com.graphene.common.utils.DateTimeUtils
 import com.graphene.writer.input.GrapheneMetric
 import com.graphene.writer.store.KeyStoreHandler
 import com.graphene.writer.store.KeyStoreHandlerProperty
@@ -35,9 +34,9 @@ abstract class AbstractElasticsearchKeyStoreHandler(
   private var templateIndexPattern: String
   private var tenant: String
 
-  private var lastFlushTimeMillis = DateTimeUtils.currentTimeMillis()
-  private var batchSize: Int = 0
-  private var flushInterval: Long = 0
+  private var batchSize: Int = 10000
+  private var preloadBatchSize: Int = 5000
+  private var flushInterval: Long = 10_000L
   private var targetProcessTime: Long
   private var requestOptions: RequestOptions
   private var cacheExpireIntervalInSeconds: Long
@@ -45,7 +44,7 @@ abstract class AbstractElasticsearchKeyStoreHandler(
   private val metrics = LinkedBlockingDeque<GrapheneMetric>()
   private val preloadMetrics = LinkedBlockingDeque<GrapheneMetric>()
   private val cachedThreadPool = Executors.newCachedThreadPool(NamedThreadFactory("C-${this::class.simpleName!!}"))
-  private var keyCache: KeyCache<String> // Default 5 Min
+  private var keyCache: KeyCache<String>
 
   init {
     val property = keyStoreHandlerProperty.property
@@ -56,6 +55,7 @@ abstract class AbstractElasticsearchKeyStoreHandler(
     this.tenant = keyStoreHandlerProperty.tenant
     this.templateIndexPattern = property.templateIndexPattern
     this.batchSize = property.bulk.actions
+    this.preloadBatchSize = property.bulk.preloadActions
     this.flushInterval = property.bulk.interval
     this.keyCache = SimpleLocalKeyCache(property.cacheExpireIntervalInSeconds)
     this.cacheExpireIntervalInSeconds = property.cacheExpireIntervalInSeconds
@@ -66,7 +66,7 @@ abstract class AbstractElasticsearchKeyStoreHandler(
     this.elasticsearchClient.createIndexIfNotExists(setOf(elasticsearchClient.getIndexWithCurrentDate(index, tenant)))
 
     this.keyStoreScheduler = Executors.newSingleThreadScheduledExecutor(NamedThreadFactory(this::class.simpleName!!))
-    this.keyStoreScheduler.scheduleWithFixedDelay(this, property.initialSchedulerDelay, property.schedulerDelay, TimeUnit.MILLISECONDS)
+    this.keyStoreScheduler.scheduleWithFixedDelay(this, 3_000L, this.flushInterval, TimeUnit.MILLISECONDS)
 
     val requestOptionsBuilder = RequestOptions.DEFAULT.toBuilder()
     requestOptionsBuilder.setHttpAsyncResponseConsumerFactory(HttpAsyncResponseConsumerFactory
@@ -116,20 +116,22 @@ abstract class AbstractElasticsearchKeyStoreHandler(
     val preloadMetricsList = mutableListOf<GrapheneMetric>()
     metrics.drainTo(metricsList)
     preloadMetrics.drainTo(preloadMetricsList)
-    if (lastFlushTimeMillis < DateTimeUtils.currentTimeMillis() - flushInterval) {
-      flush(metricsList)
-      flush(preloadMetricsList, this.cacheExpireIntervalInSeconds)
-    }
+    flush(metricsList)
+    flush(preloadMetricsList, this.cacheExpireIntervalInSeconds, this.preloadBatchSize)
   }
 
-  private fun flush(metricsList: List<GrapheneMetric>, targetProcessTime: Long = this.targetProcessTime) {
+  private fun flush(
+    metricsList: List<GrapheneMetric>,
+    targetProcessTime: Long = this.targetProcessTime,
+    batchSize: Int = this.batchSize
+  ) {
     if (metricsList.isEmpty()) {
       return
     }
 
     var multiGetRequestContainer = MultiGetRequestContainer()
     var delay = 0L
-    val additionalDelay = calculateAdditionalDelay(metricsList.size, targetProcessTime)
+    val additionalDelay = calculateAdditionalDelay(metricsList.size, batchSize, targetProcessTime)
     for (metric in metricsList) {
       val index = elasticsearchClient.getIndexWithDate(index, tenant, metric.timestampMillis())
       multiGetRequestContainer.add(index, type, metric)
@@ -144,12 +146,16 @@ abstract class AbstractElasticsearchKeyStoreHandler(
     doFlush(multiGetRequestContainer, delay)
   }
 
-  private fun calculateAdditionalDelay(size: Int, targetProcessTime: Long): Long {
-    val batches: Long = (size / batchSize).toLong()
-    return if (batches == 0L) {
+  private fun calculateAdditionalDelay(size: Int, batchSize: Int, targetProcessTime: Long): Long {
+    return if (batchSize <= 0) {
       0L
     } else {
-      targetProcessTime / batches
+      val batches: Int = size / batchSize
+      if (batches == 0) {
+        0L
+      } else {
+        targetProcessTime / batchSize
+      }
     }
   }
 
@@ -188,8 +194,6 @@ abstract class AbstractElasticsearchKeyStoreHandler(
           logger.info("Requested to write ${bulkRequest.size} keys to ES.")
         }
       }
-
-      lastFlushTimeMillis = DateTimeUtils.currentTimeMillis()
     } catch (e: Exception) {
       logger.error("Encountered error in busy loop: ", e)
     }
@@ -197,9 +201,9 @@ abstract class AbstractElasticsearchKeyStoreHandler(
 
   override fun close() {
     keyStoreScheduler.shutdown()
-    logger.info("Sleeping for 10 seconds to allow leftovers to be written")
+    logger.info("Sleeping for ${this.targetProcessTime / 1_000L} seconds to allow leftovers to be written")
     try {
-      Thread.sleep(10000)
+      Thread.sleep(this.targetProcessTime)
     } catch (ignored: InterruptedException) {
     }
   }

@@ -97,9 +97,12 @@ graphene:
               templateIndexPattern: "simple-key-path*"
               index: "simple-key-path"
               type: "path"
+              cacheExpireIntervalInSeconds: 300
+              targetProcessTime: 30000
               bulk:
                 actions: 10000
-                interval: 500
+                preloadActions: 5000
+                interval: 10000
           index-based-key-store-handler:
             enabled: false
             type: "IndexBasedKeyStoreHandler"
@@ -118,9 +121,12 @@ graphene:
               templateIndexPattern: "index-based-key-path*"
               index: "index-based-key-path"
               type: "path"
+              cacheExpireIntervalInSeconds: 300
+              targetProcessTime: 30000
               bulk:
                 actions: 10000
-                interval: 500
+                preloadActions: 5000
+                interval: 10000
           tag-based-key-store-handler:
             enabled: true
             type: "TagBasedKeyStoreHandler"
@@ -139,9 +145,12 @@ graphene:
               templateIndexPattern: "tag-based-key-path*"
               index: "tag-based-key-path"
               type: "path"
+              cacheExpireIntervalInSeconds: 300
+              targetProcessTime: 30000
               bulk:
                 actions: 10000
-                interval: 500
+                preloadActions: 5000
+                interval: 10000
       data:
         handlers:
           simple-data-store-handler:
@@ -198,8 +207,16 @@ graphene:
 
 server:
   port: 8081
+  tomcat:
+    mbeanregistry:
+      enabled: true
+    threads:
+      max: 500
 
 management:
+  health:
+    elasticsearch:
+      enabled: false
   metrics:
     export:
       graphite:
@@ -208,6 +225,3 @@ management:
         port: 2003
         protocol: plaintext
         graphite-tags-enabled: true
-    tags:
-      application: graphene-writer
-      env: local

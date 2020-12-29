@@ -73,9 +73,9 @@ class TagBasedKeySearchHandler(
   }
 
   companion object {
-    const val KEY = "@key"
-    const val NAME = "@name"
-    const val TAGS = "@tags"
-    val INTERNAL_KEYS = setOf(KEY, NAME, TAGS)
+    private const val KEY = "@key"
+    private const val NAME = "@name"
+    private const val TAGS = "@tags"
+    private val INTERNAL_KEYS = setOf(KEY, NAME, TAGS)
   }
 }
