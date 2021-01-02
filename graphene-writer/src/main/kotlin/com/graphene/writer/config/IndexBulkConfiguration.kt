@@ -6,12 +6,14 @@ package com.graphene.writer.config
 class IndexBulkConfiguration {
 
   var actions: Int = 10000
-  var interval: Long = 500
+  var preloadActions: Int = 5000
+  var interval: Long = 10_000L
 
   override fun toString(): String {
     return "IndexBulkConfiguration{" +
-      "actions=" + actions +
-      ", interval=" + interval +
-      '}'.toString()
+      "actions=$actions" +
+      ", preloadActions=$preloadActions" +
+      ", interval=$interval" +
+      "}"
   }
 }

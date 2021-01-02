@@ -76,7 +76,7 @@ class SimpleDataStoreHandler(
       ttl,
       grapheneMetric.value,
       grapheneMetric.getTenant(),
-      grapheneMetric.id,
+      grapheneMetric.key,
       normalize(grapheneMetric.timestampSeconds)
     )
   }

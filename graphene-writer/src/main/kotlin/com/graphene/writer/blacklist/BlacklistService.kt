@@ -26,6 +26,6 @@ class BlacklistService(
 
   fun isBlackListed(grapheneMetric: GrapheneMetric): Boolean {
     val pattern = rules[grapheneMetric.getTenant()]
-    return pattern?.matcher(grapheneMetric.id)?.matches() ?: false
+    return pattern?.matcher(grapheneMetric.key)?.matches() ?: false
   }
 }

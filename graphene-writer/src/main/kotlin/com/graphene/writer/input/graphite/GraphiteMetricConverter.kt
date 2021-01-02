@@ -1,6 +1,7 @@
 package com.graphene.writer.input.graphite
 
 import com.google.common.collect.Maps
+import com.graphene.common.utils.HashUtils.sha512
 import com.graphene.reader.utils.MetricRule
 import com.graphene.writer.input.GrapheneMetric
 import com.graphene.writer.input.MetricConverter
@@ -15,15 +16,15 @@ class GraphiteMetricConverter : MetricConverter<GraphiteMetric>, GraphiteAware {
     val nodes = convertNodes(metric)
     val tags = convertTags(metric)
     val source = judgeSource(tags)
-
-    var id = getGraphiteKey(nodes)
+    var key = getGraphiteKey(nodes)
     if (Source.GRAPHITE_TAG == source) {
-      id = appendTagsToId(id, tags)
+      key = appendTagsToId(key, tags)
     }
 
     val grapheneMetric = GrapheneMetric(
       source = source,
-      id = id,
+      id = key.sha512(),
+      key = key,
       meta = Collections.emptyMap(),
       tags = tags,
       nodes = nodes,

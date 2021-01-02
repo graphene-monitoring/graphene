@@ -1,5 +1,6 @@
 package com.graphene.writer.input.graphite
 
+import com.graphene.common.utils.HashUtils.sha512
 import com.graphene.writer.input.GrapheneMetric
 import com.graphene.writer.input.Source
 import java.util.Collections
@@ -32,6 +33,7 @@ internal class GraphiteMetricConverterTest {
     assertEquals(
       GrapheneMetric(
         Source.GRAPHITE,
+        "a.b.c".sha512(),
         "a.b.c",
         Collections.emptyMap(),
         TreeMap(),
@@ -63,6 +65,7 @@ internal class GraphiteMetricConverterTest {
     assertEquals(
       GrapheneMetric(
         Source.GRAPHITE,
+        "a.b.unknown.c".sha512(),
         "a.b.unknown.c",
         Collections.emptyMap(),
         TreeMap(),
@@ -94,6 +97,7 @@ internal class GraphiteMetricConverterTest {
     assertEquals(
       GrapheneMetric(
         Source.GRAPHITE_TAG,
+        "cpu.usage;hostname=local".sha512(),
         "cpu.usage;hostname=local",
         Collections.emptyMap(),
         TreeMap(mutableMapOf(Pair("hostname", "local"))),
@@ -125,6 +129,7 @@ internal class GraphiteMetricConverterTest {
     assertEquals(
       GrapheneMetric(
         Source.GRAPHITE_TAG,
+        "cpu.unknown.usage;hostname=local".sha512(),
         "cpu.unknown.usage;hostname=local",
         Collections.emptyMap(),
         TreeMap(mutableMapOf(Pair("hostname", "local"))),

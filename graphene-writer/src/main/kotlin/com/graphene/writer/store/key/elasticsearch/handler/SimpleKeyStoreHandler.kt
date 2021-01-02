@@ -23,9 +23,9 @@ class SimpleKeyStoreHandler(
     return metric.source == Source.GRAPHITE
   }
 
-  override fun mapToGrapheneIndexRequests(metric: GrapheneMetric?): List<GrapheneIndexRequest> {
+  override fun mapToGrapheneIndexRequests(metric: GrapheneMetric): List<GrapheneIndexRequest> {
     val grapheneIndexRequests = mutableListOf<GrapheneIndexRequest>()
-    val nodes = metric!!.nodes
+    val nodes = metric.nodes
     val graphiteKeySb = StringBuilder()
 
     for (indexedValue in nodes.entries.withIndex()) {

@@ -80,7 +80,7 @@ class OffsetBasedDataStoreHandler(
       ttl,
       grapheneMetric.value,
       grapheneMetric.getTenant(),
-      grapheneMetric.id,
+      grapheneMetric.key,
       getStartTime(grapheneMetric.timestampSeconds),
       getOffset(grapheneMetric.timestampSeconds)
     )

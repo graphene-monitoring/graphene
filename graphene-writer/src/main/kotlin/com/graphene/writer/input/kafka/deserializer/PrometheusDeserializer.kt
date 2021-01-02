@@ -2,6 +2,7 @@ package com.graphene.writer.input.kafka.deserializer
 
 import com.graphene.common.rule.GrapheneRules.SpecialChar
 import com.graphene.common.utils.DateTimeUtils
+import com.graphene.common.utils.HashUtils.sha512
 import com.graphene.writer.input.GrapheneMetric
 import com.graphene.writer.input.Source
 import java.util.Objects
@@ -54,7 +55,7 @@ class PrometheusDeserializer : Deserializer<List<GrapheneMetric>> {
       var value = ""
 
       val tmp = StringBuilder()
-      val id = StringBuilder()
+      val key = StringBuilder()
       var tmpTagKey = ""
 
       var withoutTimestamp = true
@@ -63,7 +64,7 @@ class PrometheusDeserializer : Deserializer<List<GrapheneMetric>> {
       val metricChars = plainPrometheusMetric.toCharArray()
       for (metricChar in metricChars) {
         if (metricChar == SpecialChar.BRACE_OPEN) {
-          id.append("$tmp;")
+          key.append("$tmp;")
           tmp.clear()
         } else if (metricChar == SpecialChar.EQUAL) {
           tmpTagKey = tmp.toString()
@@ -75,11 +76,11 @@ class PrometheusDeserializer : Deserializer<List<GrapheneMetric>> {
           }
 
           tags[tmpTagKey] = tmp.toString()
-          id.append("$tmpTagKey=$tmp")
+          key.append("$tmpTagKey=$tmp")
           tmp.clear()
 
           if (metricChar == SpecialChar.COMMA) {
-            id.append(SpecialChar.SEMICOLON)
+            key.append(SpecialChar.SEMICOLON)
           }
           if (metricChar == SpecialChar.BRACE_CLOSE) {
             metBraceClose = true
@@ -106,7 +107,7 @@ class PrometheusDeserializer : Deserializer<List<GrapheneMetric>> {
         timestamp = tmp.toString()
       }
 
-      return GrapheneMetric(Source.PROMETHEUS, id.toString(), mutableMapOf(), tags, TreeMap(), value.toDouble(), normalizedTimestamp(timestamp.toLong() / 1000))
+      return GrapheneMetric(Source.PROMETHEUS, key.toString().sha512(), key.toString(), mutableMapOf(), tags, TreeMap(), value.toDouble(), normalizedTimestamp(timestamp.toLong() / 1000))
     } catch (e: Throwable) {
       log.error("Fail to deserialize from prometheus format metric to graphene metric : $plainPrometheusMetric", e)
     }

@@ -1,15 +1,15 @@
 package com.graphene.writer.store.key.elasticsearch
 
 import java.io.Closeable
-import org.elasticsearch.action.admin.indices.get.GetIndexResponse
 import org.elasticsearch.action.bulk.BulkResponse
 import org.elasticsearch.action.get.MultiGetRequest
 import org.elasticsearch.action.get.MultiGetResponse
 import org.elasticsearch.client.RequestOptions
+import org.elasticsearch.client.indices.GetIndexResponse
 
 interface ElasticsearchClient : Closeable, RotatedIndexAware {
 
-  fun createIndexIfNotExists(index: String, tenant: String, from: Long?, to: Long?)
+  fun createIndexIfNotExists(indices: Set<String>)
 
   fun createTemplateIfNotExists(templatePattern: String, templateName: String, templateSource: String)
 

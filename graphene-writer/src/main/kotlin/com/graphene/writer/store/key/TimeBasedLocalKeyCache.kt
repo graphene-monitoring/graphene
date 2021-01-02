@@ -17,7 +17,7 @@ class TimeBasedLocalKeyCache<K>(
 ) : KeyCache<K> {
 
   private val internalTimeBasedCache = CacheBuilder.newBuilder()
-    .expireAfterAccess(expireInterval, TimeUnit.MINUTES)
+    .expireAfterAccess(expireInterval, TimeUnit.SECONDS)
     .build<Long, MutableSet<K>>()
 
   override fun get(key: K): K? {
