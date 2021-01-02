@@ -47,12 +47,12 @@ class TagBasedKeySearchHandler(
             continue
           }
           val path = Path(sources[KEY].toString())
-          if (Objects.nonNull(hit.sourceAsMap)) {
-            for (source in sources) {
-              if (! INTERNAL_KEYS.contains(source.key)) {
-                path.addTag(source.key, source.value.toString())
-              }
+          for (source in sources) {
+            if (INTERNAL_KEYS.contains(source.key)) {
+              continue
             }
+
+            path.addTag(source.key, source.value.toString())
           }
           result.add(path)
         }
