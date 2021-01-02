@@ -12,6 +12,7 @@ import org.elasticsearch.index.query.QueryBuilder
 /**
  *
  * @author jerome89
+ * @author dark
  * @since 1.6.0
  */
 class TagBasedKeySearchHandler(
@@ -42,6 +43,7 @@ class TagBasedKeySearchHandler(
         for (hit in response.hits) {
           val sources = hit.sourceAsMap as Map<String, *>
           if (! sources.containsKey(KEY)) {
+            log.debug("There has not @key because of indexing with the old version or key indexing is not done")
             continue
           }
           val path = Path(sources[KEY].toString())
@@ -58,12 +60,10 @@ class TagBasedKeySearchHandler(
         response = elasticsearchClient.searchScroll(response)
         scrollIds.add(response.scrollId)
       }
-
-      if (scrollIds.isNotEmpty()) {
-        elasticsearchClient.clearScroll(scrollIds)
-      }
     } catch (e: Exception) {
-      log.warn("Search request is failed: " + e.message)
+      log.warn("Search request is failed", e)
+    } finally {
+      elasticsearchClient.clearScroll(scrollIds)
     }
   }
 
