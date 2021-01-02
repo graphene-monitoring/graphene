@@ -103,7 +103,7 @@ abstract class AbstractElasticsearchKeyStoreHandler(
       tenant,
       grapheneMetric.timestampMillis() + (this.cacheExpireIntervalInSeconds * 1_000L)
     )
-    if (originalIndex != preloadIndex && isProcessable(grapheneMetric) && keyCache.putIfAbsent("${preloadIndex}_${grapheneMetric.key}")) {
+    if (originalIndex != preloadIndex && isProcessable(grapheneMetric) && keyCache.putIfAbsent("${preloadIndex}_${grapheneMetric.id}")) {
       val preloadGrapheneMetric = grapheneMetric.copy(
         timestampSeconds = grapheneMetric.timestampSeconds + this.cacheExpireIntervalInSeconds
       )
