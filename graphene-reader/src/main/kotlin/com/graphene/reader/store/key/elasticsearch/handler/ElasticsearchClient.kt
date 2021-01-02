@@ -80,6 +80,8 @@ class ElasticsearchClient(
   }
 
   fun clearScroll(scrollIds: List<String>) {
+    if (scrollIds.isEmpty()) return
+
     val clearScrollRequest = ClearScrollRequest()
     clearScrollRequest.scrollIds(scrollIds)
 

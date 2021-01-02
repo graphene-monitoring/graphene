@@ -5,13 +5,13 @@ import com.graphene.common.beans.Path
 import com.graphene.reader.service.index.KeySearchHandler
 import com.graphene.reader.store.tag.elasticsearch.optimizer.ElasticsearchTagSearchQueryOptimizer
 import com.graphene.reader.store.tag.elasticsearch.optimizer.TagSearchTarget
-import java.util.Objects
 import org.apache.logging.log4j.LogManager
 import org.elasticsearch.index.query.QueryBuilder
 
 /**
  *
  * @author jerome89
+ * @author dark
  * @since 1.6.0
  */
 class TagBasedKeySearchHandler(
@@ -42,15 +42,16 @@ class TagBasedKeySearchHandler(
         for (hit in response.hits) {
           val sources = hit.sourceAsMap as Map<String, *>
           if (! sources.containsKey(KEY)) {
+            log.debug("There has not @key because of indexing with the old version or key indexing is not done")
             continue
           }
           val path = Path(sources[KEY].toString())
-          if (Objects.nonNull(hit.sourceAsMap)) {
-            for (source in sources) {
-              if (! INTERNAL_KEYS.contains(source.key)) {
-                path.addTag(source.key, source.value.toString())
-              }
+          for (source in sources) {
+            if (INTERNAL_KEYS.contains(source.key)) {
+              continue
             }
+
+            path.addTag(source.key, source.value.toString())
           }
           result.add(path)
         }
@@ -58,12 +59,10 @@ class TagBasedKeySearchHandler(
         response = elasticsearchClient.searchScroll(response)
         scrollIds.add(response.scrollId)
       }
-
-      if (scrollIds.isNotEmpty()) {
-        elasticsearchClient.clearScroll(scrollIds)
-      }
     } catch (e: Exception) {
-      log.warn("Search request is failed: " + e.message)
+      log.warn("Search request is failed", e)
+    } finally {
+      elasticsearchClient.clearScroll(scrollIds)
     }
   }
 
